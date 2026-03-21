@@ -1,6 +1,6 @@
 # 🍔 Wow Food - Cloud Kitchen Delivery Engine
 
-![Wow Food Banner](https://images.unsplash.com/photo-1596797882943-191244ee9103?auto=format&fit=crop&w=1600&h=400)
+![Wow Food Banner](https://img.freepik.com/free-photo/top-view-table-full-food_23-2149209253.jpg?semt=ais_hybrid&w=740&q=80)
 
 **Wow Food** is a Full-Stack Cloud Kitchen Web Application built for high-speed food delivery operations in Bareilly. It features a modern, interactive customer UI and a real-time, secure Admin KOT (Kitchen Order Ticket) dashboard.
 
