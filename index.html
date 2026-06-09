@@ -14,14 +14,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600;1,800&family=Poppins:wght@300;400;600;800&display=swap');
         
         body { 
             font-family: 'Poppins', sans-serif; 
             overflow-x: hidden; 
-            transition: background-color 1s ease, color 1s ease;
+            transition: background-color 0.5s ease, color 0.5s ease;
             -webkit-font-smoothing: antialiased;
         }
+
+        .font-playfair { font-family: 'Playfair Display', serif; }
 
         #banner-carousel .slide { opacity: 0; transition: opacity 0.8s ease-in-out; }
         #banner-carousel .slide.active { opacity: 1; z-index: 10; }
@@ -33,26 +35,130 @@
 
         .theme-morning { background-color: #fffbeb; color: #1f2937; }
         .theme-night { background-color: #030712; color: #f9fafb; }
-        .theme-night #menu, .theme-night #location { background-color: #030712; }
+        .theme-night #menu, .theme-night #promo-landing, .theme-night #specials-section { background-color: #030712; }
         .theme-night .bg-white { background-color: #111827; color: white; border-color: #1f2937; }
         .theme-night .text-gray-900 { color: #f9fafb; }
         .theme-night .text-gray-800 { color: #f3f4f6; }
         .theme-night .text-gray-600 { color: #9ca3af; }
         
-        .receipt-edge {
-            background-image: linear-gradient(135deg, transparent 50%, #f3f4f6 50%), linear-gradient(45deg, transparent 50%, #f3f4f6 50%);
-            background-position: top left, top left;
-            background-size: 16px 16px;
-            background-repeat: repeat-x;
-            height: 8px;
-            width: 100%;
-            display: block;
-        }
-        
         .glass-nav { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); }
         .theme-night .glass-nav { background: rgba(3, 7, 18, 0.85); border-bottom: 1px solid #1f2937; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .star-btn { transition: transform 0.2s, color 0.2s; cursor: pointer; }
+        .star-btn:hover { transform: scale(1.2); }
+
+        /* ========== MOBILE NAV ========== */
+        #mobile-menu {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-origin: top right;
+        }
+        #mobile-menu.hidden { display: none; }
+
+        /* ========== AI CHAT TYPING DOTS ========== */
+        .typing-dots span {
+            display: inline-block;
+            width: 7px; height: 7px;
+            background: #ea580c;
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: bounce 1.2s infinite ease-in-out;
+        }
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes bounce { 0%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-8px); } }
+
+        /* ========== ORDER STATUS TIMELINE ========== */
+        .status-step { position: relative; }
+        .status-step::before {
+            content: '';
+            position: absolute;
+            left: 15px; top: 30px;
+            width: 2px; height: calc(100% + 8px);
+            background: #e5e7eb;
+        }
+        .status-step.done::before { background: #ea580c; }
+        .status-step:last-child::before { display: none; }
+
+        /* ========== ADDRESS FORM ========== */
+        .address-step { display: none; }
+        .address-step.active { display: flex; }
+
+        /* Chat message animation */
+        .chat-msg-enter {
+            animation: slideInMsg 0.3s ease forwards;
+        }
+        @keyframes slideInMsg {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ========== FAQ BOT STYLES ========== */
+        #faq-panel {
+            transition: transform 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+        }
+        #faq-panel.faq-hidden {
+            transform: translateY(20px) scale(0.95);
+            opacity: 0;
+            pointer-events: none;
+        }
+        .faq-chip {
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1.5px solid #fed7aa;
+            background: #fff7ed;
+            color: #ea580c;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 20px;
+            white-space: nowrap;
+            display: inline-block;
+        }
+        .faq-chip:hover {
+            background: #ea580c;
+            color: white;
+            border-color: #ea580c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(234,88,12,0.3);
+        }
+        .faq-answer-bubble {
+            animation: faqPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        @keyframes faqPop {
+            from { opacity: 0; transform: scale(0.9) translateY(8px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        #faq-btn-main {
+            transition: all 0.3s ease;
+        }
+        #faq-btn-main:hover {
+            transform: scale(1.08);
+            box-shadow: 0 8px 25px rgba(234,88,12,0.4);
+        }
+        .faq-category-tab {
+            cursor: pointer;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            transition: all 0.2s;
+            border: 1.5px solid transparent;
+        }
+        .faq-category-tab.active {
+            background: #ea580c;
+            color: white;
+        }
+        .faq-category-tab:not(.active) {
+            background: #f3f4f6;
+            color: #6b7280;
+            border-color: #e5e7eb;
+        }
+        .faq-category-tab:not(.active):hover {
+            border-color: #ea580c;
+            color: #ea580c;
+            background: #fff7ed;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -67,22 +173,48 @@
 
     <nav class="flex justify-between items-center px-6 md:px-12 py-5 sticky top-0 z-50 shadow-sm glass-nav">
         <h1 class="text-2xl font-bold text-orange-600 uppercase tracking-tight">Wow <span class="text-gray-800">Food</span></h1>
+        
         <div class="hidden md:flex space-x-4 font-semibold items-center">
             <a href="#" class="hover:text-orange-500 transition px-2">Home</a>
             <a href="#menu" class="hover:text-orange-500 transition px-2">Menu</a>
             
             <div id="auth-section" class="flex items-center space-x-2">
-                <div class="text-orange-600 border-2 border-orange-600 px-5 py-1.5 rounded-full hover:bg-orange-600 hover:text-white transition flex items-center space-x-1 group cursor-pointer">
+                <div class="text-orange-600 border-2 border-orange-600 px-5 py-1.5 rounded-full hover:bg-orange-600 hover:text-white transition flex items-center space-x-1 cursor-pointer">
                     <button onclick="toggleLogin()" class="font-bold hover:underline">Login</button>
                     <span class="font-light opacity-60">/</span>
                     <button onclick="toggleSignup()" class="font-bold hover:underline">Sign Up</button>
                 </div>
             </div>
             
+            <button onclick="toggleTheme()" id="theme-toggle-btn" class="text-2xl hover:scale-110 transition transform px-2" title="Toggle Theme">🌗</button>
             <button onclick="toggleBooking()" class="bg-white text-orange-600 border-2 border-orange-600 px-5 py-1.5 rounded-full font-bold hover:bg-orange-50 transition">Book Table</button>
-            <button class="bg-orange-600 text-white px-6 py-2 rounded-full hover:bg-orange-700 transition shadow-md shadow-orange-200">Order Now</button>
+        </div>
+
+        <div class="flex md:hidden items-center space-x-3">
+            <button onclick="toggleTheme()" id="theme-toggle-btn-mobile" class="text-xl">🌗</button>
+            <button onclick="toggleCart()" class="relative bg-orange-600 text-white p-2 rounded-2xl">
+                <span class="text-xl">🛒</span>
+                <span id="cart-count-mobile" class="absolute -top-1 -right-1 bg-white text-orange-600 font-black text-[10px] px-1.5 py-0.5 rounded-full">0</span>
+            </button>
+            <button onclick="toggleMobileMenu()" id="hamburger-btn" class="text-gray-800 focus:outline-none p-2">
+                <div class="w-6 h-0.5 bg-current mb-1.5 transition-all" id="ham-line1"></div>
+                <div class="w-6 h-0.5 bg-current mb-1.5 transition-all" id="ham-line2"></div>
+                <div class="w-4 h-0.5 bg-current transition-all" id="ham-line3"></div>
+            </button>
         </div>
     </nav>
+
+    <div id="mobile-menu" class="hidden md:hidden glass-nav border-t border-gray-100 px-6 py-6 z-40 shadow-lg">
+        <div class="flex flex-col space-y-4">
+            <a href="#" class="font-bold text-gray-800 hover:text-orange-600 transition text-lg">🏠 Home</a>
+            <a href="#menu" onclick="toggleMobileMenu()" class="font-bold text-gray-800 hover:text-orange-600 transition text-lg">🍽️ Menu</a>
+            <button onclick="toggleBooking(); toggleMobileMenu();" class="text-left font-bold text-gray-800 hover:text-orange-600 transition text-lg">📅 Book Table</button>
+            <div id="mobile-auth-section" class="pt-4 border-t border-gray-100">
+                <button onclick="toggleLogin(); toggleMobileMenu();" class="w-full bg-orange-600 text-white py-3 rounded-2xl font-bold text-lg mb-2">Login</button>
+                <button onclick="toggleSignup(); toggleMobileMenu();" class="w-full border-2 border-orange-600 text-orange-600 py-3 rounded-2xl font-bold text-lg">Sign Up</button>
+            </div>
+        </div>
+    </div>
 
     <div id="pwa-install" class="fixed top-24 left-1/2 -translate-x-1/2 bg-white p-4 rounded-3xl shadow-2xl z-[500] flex items-center space-x-4 border-2 border-orange-100 transform -translate-y-[200%] transition-transform duration-700 w-11/12 max-w-[400px]">
         <div class="w-12 h-12 bg-orange-600 rounded-2xl flex items-center justify-center text-2xl shadow-lg text-white">📱</div>
@@ -96,24 +228,30 @@
 
     <div id="toast-container" class="fixed top-24 right-5 md:right-10 z-[600] flex flex-col gap-4 pointer-events-none"></div>
 
-    <section class="relative min-h-[85vh] flex flex-col md:flex-row items-center px-6 md:px-12 pt-10 md:pt-16">
-        <div class="md:w-1/2 space-y-6">
-            <h2 id="hero-title" class="text-5xl md:text-7xl font-extrabold leading-tight opacity-0 text-gray-900">Ghar Jaisa Swad, <br> <span class="text-orange-600 underline underline-offset-8">Cloud Kitchen</span> Speed!</h2>
-            <p id="hero-desc" class="text-lg opacity-0 max-w-md italic text-gray-600">CB Ganj's smart food engine. Managed by Utkarsh Katiyar & Sneha Yadav.</p>
-            <div id="hero-btns" class="space-x-4 opacity-0 flex">
-                <a href="#menu" class="bg-orange-600 text-white text-lg px-8 py-4 rounded-2xl shadow-lg hover:bg-orange-700 transition transform hover:scale-105">Browse Menu</a>
+    <section class="relative min-h-[85vh] flex flex-col md:flex-row items-center px-6 md:px-12 pt-10 md:pt-16 overflow-hidden">
+        
+        <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+            <div class="antigravity-el absolute top-[20%] left-[10%] text-5xl md:text-7xl opacity-40 blur-[1px]">🍔</div>
+            <div class="antigravity-el absolute top-[60%] left-[5%] text-4xl md:text-6xl opacity-30 blur-[2px]">🍕</div>
+            <div class="antigravity-el absolute top-[30%] right-[10%] text-5xl md:text-7xl opacity-50">🍟</div>
+            <div class="antigravity-el absolute top-[70%] right-[20%] text-4xl md:text-6xl opacity-30 blur-[1px]">🍩</div>
+            <div class="antigravity-el absolute top-[10%] right-[40%] text-3xl md:text-5xl opacity-40">🥤</div>
+        </div>
+
+        <div class="md:w-1/2 space-y-6 relative z-10">
+            <div id="hero-title" class="opacity-0">
+                <p class="text-xs md:text-sm font-semibold uppercase tracking-[0.4em] text-[#dca520] mb-4 font-sans">Welcome To Wow Food</p>
+                <h2 class="text-6xl md:text-[5.5rem] font-playfair font-extrabold text-gray-900 leading-[1.05] tracking-tight">
+                    Taste the <br> 
+                    <span class="italic text-[#dca520] font-semibold">Extraordinary</span>
+                </h2>
             </div>
-            <div class="mt-8 bg-orange-50/50 backdrop-blur-md p-4 rounded-3xl inline-block shadow-sm border border-orange-100 reveal">
-                <p class="text-xs font-bold text-gray-600 mb-3 uppercase tracking-widest">How are you feeling today? 🤖</p>
-                <div class="flex space-x-4">
-                    <button onclick="setMood('sad')" class="text-3xl hover:scale-125 transition transform" title="Feeling Sad">😢</button>
-                    <button onclick="setMood('party')" class="text-3xl hover:scale-125 transition transform" title="Party Mood">🥳</button>
-                    <button onclick="setMood('sleepy')" class="text-3xl hover:scale-125 transition transform" title="Feeling Sleepy">🥱</button>
-                    <button onclick="setMood('angry')" class="text-3xl hover:scale-125 transition transform" title="Feeling Angry">😡</button>
-                </div>
+            <p id="hero-desc" class="text-lg opacity-0 max-w-md italic text-gray-600 mt-6">CB Ganj's smart food engine. Managed by Utkarsh Katiyar & Sneha Yadav.</p>
+            <div id="hero-btns" class="space-x-4 opacity-0 flex mt-4">
+                <a id="hero-main-btn" href="javascript:void(0)" onclick="toggleLogin()" class="bg-orange-600 text-white text-lg px-8 py-4 rounded-2xl shadow-lg hover:bg-orange-700 transition transform hover:scale-105">Login to Unlock Menu 🔓</a>
             </div>
         </div>
-        <div class="md:w-1/2 flex justify-center mt-12 md:mt-0">
+        <div class="md:w-1/2 flex justify-center mt-12 md:mt-0 relative z-10">
             <div id="food-img" class="w-64 h-64 md:w-[450px] md:h-[450px] bg-orange-200 rounded-full flex items-center justify-center shadow-2xl opacity-0 scale-50 overflow-hidden">
                 <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800" class="w-full h-full object-cover" alt="Food">
             </div>
@@ -138,13 +276,25 @@
                 </div>
             </div>
             <div class="slide absolute inset-0 rounded-[50px] overflow-hidden bg-gray-950">
+                <video autoplay loop muted playsinline preload="auto" class="w-full h-full object-cover opacity-70">
+                    <source src="https://pixabay.com/videos/download/x-149678_medium.mp4" type="video/mp4">
+                </video>
+                <div class="absolute inset-0 bg-gradient-to-t from-gray-950/90 via-gray-950/30 to-transparent p-12 flex flex-col justify-end text-white space-y-3">
+                    <span class="bg-red-600 text-xs font-bold px-4 py-1.5 rounded-full w-fit tracking-widest uppercase flex items-center shadow-lg">
+                        <span class="w-2 h-2 bg-white rounded-full animate-pulse mr-2"></span>Live Kitchen
+                    </span>
+                    <h2 class="text-4xl md:text-6xl font-black leading-none drop-shadow-2xl">Freshly Prepared. <br><span class="text-orange-400">Hygiene First!</span></h2>
+                    <p class="font-medium text-lg italic drop-shadow-md">Watch our master chefs in action, right here in Bareilly.</p>
+                </div>
+            </div>
+            <div class="slide absolute inset-0 rounded-[50px] overflow-hidden bg-gray-950">
                 <div class="w-full h-full flex flex-col md:flex-row items-center p-12 text-white">
                     <div class="md:w-3/5 space-y-3">
                         <span class="text-orange-500 font-bold uppercase tracking-widest text-sm">Tech-Powered by Utkarsh Katiyar</span>
                         <h2 class="text-4xl md:text-6xl font-black leading-none">Smartest Delivery Engine <br>In Bareilly.</h2>
                     </div>
                     <div class="md:w-2/5 flex justify-center mt-6 md:mt-0">
-                         <dotlottie-player src="https://lottie.host/9f50085d-8f35-42e0-94e8-8b8719f96200/5Wv0YV9o7r.json" background="transparent" speed="1" style="width: 250px; height: 250px" loop autoplay></dotlottie-player>
+                        <dotlottie-player src="https://lottie.host/9f50085d-8f35-42e0-94e8-8b8719f96200/5Wv0YV9o7r.json" background="transparent" speed="1" style="width: 250px; height: 250px" loop autoplay></dotlottie-player>
                     </div>
                 </div>
             </div>
@@ -153,17 +303,34 @@
             <button onclick="goToSlide(0)" class="dot active bg-white/40 rounded-full hover:bg-orange-500"></button>
             <button onclick="goToSlide(1)" class="dot bg-white/40 rounded-full hover:bg-orange-500"></button>
             <button onclick="goToSlide(2)" class="dot bg-white/40 rounded-full hover:bg-orange-500"></button>
+            <button onclick="goToSlide(3)" class="dot bg-white/40 rounded-full hover:bg-orange-500"></button>
         </div>
     </section>
 
-    <div class="max-w-4xl mx-auto px-6 mt-10 relative z-20">
-        <div class="bg-white p-5 rounded-3xl shadow-2xl flex items-center space-x-4 border-2 border-orange-100">
-            <span class="text-3xl ml-2">🔍</span>
-            <input type="text" id="menu-search" oninput="handleSearch()" placeholder="Search 39+ delicious items..." class="w-full py-2 outline-none text-xl text-gray-700 bg-transparent font-medium">
+    <section id="promo-landing" class="py-20 px-6 md:px-12 bg-white mt-10 rounded-[60px] shadow-inner text-center reveal">
+        <h3 class="text-4xl font-black text-gray-900 mb-6">Welcome to <span class="text-orange-600">Wow Food</span> 🚀</h3>
+        <p class="text-gray-600 max-w-2xl mx-auto text-lg mb-12">CB Ganj's most premium Cloud Kitchen. We cook fresh, we deliver fast, and we serve with love. Login now to unlock our exclusive menu, secret promo codes, and a world of taste!</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <div class="p-6 bg-orange-50 rounded-3xl border border-orange-100 hover:shadow-lg transition">
+                <div class="text-4xl mb-4">👨‍🍳</div>
+                <h4 class="font-bold text-gray-900 text-xl mb-2">Master Chefs</h4>
+                <p class="text-sm text-gray-600">Curated by Utkarsh & Sneha. Every dish is a masterpiece prepared with top-quality ingredients.</p>
+            </div>
+            <div class="p-6 bg-orange-50 rounded-3xl border border-orange-100 hover:shadow-lg transition">
+                <div class="text-4xl mb-4">🚀</div>
+                <h4 class="font-bold text-gray-900 text-xl mb-2">Lightning Fast</h4>
+                <p class="text-sm text-gray-600">Direct delivery from our kitchen to your door. No middleman delays, no aggregator fees.</p>
+            </div>
+            <div class="p-6 bg-orange-50 rounded-3xl border border-orange-100 hover:shadow-lg transition">
+                <div class="text-4xl mb-4">⭐</div>
+                <h4 class="font-bold text-gray-900 text-xl mb-2">Loved by Bareilly</h4>
+                <p class="text-sm text-gray-600">"Best Paneer Butter Masala I've ever had! The delivery was so quick." <br> <span class="font-bold">- Aman S.</span></p>
+            </div>
         </div>
-    </div>
+        <button onclick="toggleLogin()" class="mt-12 bg-gray-900 text-white px-10 py-4 rounded-full text-xl font-black hover:bg-orange-600 transition shadow-2xl hover:scale-105">Login to Unlock Full Menu 🔓</button>
+    </section>
 
-    <section class="py-16 px-6 md:px-12 mt-10 reveal">
+    <section id="specials-section" class="py-16 px-6 md:px-12 mt-10 reveal hidden">
         <div class="flex justify-between items-end mb-10">
             <div>
                 <h3 class="text-4xl font-extrabold text-gray-900">Bareilly <span class="text-orange-600">Specials</span></h3>
@@ -173,7 +340,13 @@
         <div id="specials-container" class="flex overflow-x-auto space-x-8 pb-6 no-scrollbar"></div>
     </section>
 
-    <section id="menu" class="py-24 px-6 md:px-12 rounded-[60px] shadow-inner transition-colors duration-1000 mt-10">
+    <section id="menu" class="py-24 px-6 md:px-12 rounded-[60px] shadow-inner transition-colors duration-1000 mt-10 hidden">
+        <div class="max-w-4xl mx-auto px-6 relative z-20 mb-10">
+            <div class="bg-white p-5 rounded-3xl shadow-lg flex items-center space-x-4 border-2 border-orange-100">
+                <span class="text-3xl ml-2">🔍</span>
+                <input type="text" id="menu-search" oninput="handleSearch()" placeholder="Search delicious items..." class="w-full py-2 outline-none text-xl text-gray-700 bg-transparent font-medium">
+            </div>
+        </div>
         <div class="text-center mb-16 reveal">
             <h3 class="text-5xl font-black mb-6 text-gray-900">Hamara <span class="text-orange-600">Full Menu</span></h3>
             <div id="category-filters" class="flex flex-wrap justify-center gap-3 mt-8">
@@ -190,44 +363,26 @@
 
     <footer class="bg-gray-950 py-20 px-6 md:px-12 text-center text-white">
         <h1 class="text-4xl font-black text-orange-600 mb-4 tracking-tighter">Wow Food</h1>
-        <p class="text-gray-400 font-medium italic">Built with Java Spring Boot & ❤️ | Managed by Utkarsh Katiyar & Sneha Yadav</p>
+        <p class="text-gray-400 font-medium italic">© 2026 Wow Food. All rights reserved.</p>
     </footer>
 
-    <button onclick="toggleCart()" class="fixed bottom-10 right-10 bg-orange-600 text-white p-5 rounded-3xl shadow-2xl z-[110] hover:scale-110 transition active:scale-90 flex items-center shadow-orange-500/40">
-        <span class="text-3xl mr-2">🛒</span>
-        <span id="cart-count" class="bg-white text-orange-600 font-black px-3 py-1 rounded-xl text-sm">0</span>
+    <button onclick="toggleCart()" class="hidden md:flex fixed bottom-10 right-10 bg-orange-600 text-white p-5 rounded-3xl shadow-2xl z-[110] hover:scale-110 transition active:scale-90 items-center shadow-orange-500/40">
+        <span class="text-3xl mr-2">🛒</span><span id="cart-count" class="bg-white text-orange-600 font-black px-3 py-1 rounded-xl text-sm">0</span>
     </button>
 
-    <div id="cart-sidebar" class="fixed top-0 right-0 h-full w-full md:w-[450px] bg-white shadow-2xl z-[150] transform translate-x-full transition-transform duration-500 flex flex-col">
+    <div id="cart-sidebar" class="fixed top-0 right-0 h-full w-full md:w-[550px] bg-white shadow-2xl z-[150] transform translate-x-full transition-transform duration-500 flex flex-col">
         <div class="p-8 border-b flex justify-between items-center bg-orange-600 text-white">
             <h2 class="text-3xl font-extrabold">Your Order</h2>
             <button onclick="toggleCart()" class="text-4xl hover:text-gray-200">×</button>
         </div>
-        <div id="cart-items" class="flex-1 overflow-y-auto p-8 space-y-6 bg-gray-50"></div>
+        
+        <div id="cart-items" class="flex-1 overflow-y-auto p-8 space-y-4 bg-gray-50"></div>
         
         <div class="p-8 border-t bg-white">
             <div id="promo-ui" class="bg-gray-50 p-4 rounded-2xl mb-4 border border-gray-200 flex space-x-2 hidden">
                 <input type="text" id="promo-code" placeholder="Promo Code" class="flex-1 bg-white border border-gray-300 px-3 py-2 rounded-xl text-sm font-bold uppercase outline-none focus:border-orange-500 text-gray-900">
                 <button onclick="applyPromo()" class="bg-gray-900 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-orange-600 transition">Apply</button>
             </div>
-
-            <div id="split-bill-ui" class="bg-gray-50 p-4 rounded-2xl mb-4 border border-gray-200 hidden">
-                <div class="flex justify-between items-center mb-3">
-                    <span class="text-sm font-bold text-gray-700">🧑‍🤝‍🧑 Split Bill</span>
-                    <div class="flex items-center space-x-3 bg-white px-2 py-1 rounded-lg border">
-                        <button onclick="changeSplit(-1)" class="text-orange-600 font-black px-2 hover:scale-125 transition">-</button>
-                        <span id="split-count" class="font-black text-sm text-gray-900">1</span>
-                        <button onclick="changeSplit(1)" class="text-orange-600 font-black px-2 hover:scale-125 transition">+</button>
-                    </div>
-                </div>
-                <div class="flex justify-between items-center">
-                    <span class="text-xs text-gray-500 font-bold uppercase">Per Person: <br><strong id="split-amount" class="text-orange-600 text-xl">₹0</strong></span>
-                    <button onclick="shareWhatsApp()" class="bg-[#25D366] text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-green-600 flex items-center shadow-md transition transform hover:scale-105">
-                        <span class="text-lg mr-1">💬</span> Send
-                    </button>
-                </div>
-            </div>
-
             <div id="payment-ui" class="mb-6 hidden">
                 <p class="text-xs font-bold text-gray-500 uppercase mb-2">Select Payment Mode</p>
                 <select id="payment-mode" class="w-full p-3 rounded-xl bg-gray-50 border border-gray-200 font-bold text-gray-800 text-sm outline-none focus:border-orange-500">
@@ -236,102 +391,140 @@
                     <option value="Credit/Debit Card">Credit/Debit Card</option>
                 </select>
             </div>
-
             <div class="flex justify-between text-2xl font-bold mb-6 text-gray-900"><span>Total</span><span id="cart-total" class="text-orange-600">₹0</span></div>
-            <button onclick="checkout()" class="w-full bg-orange-600 text-white py-5 rounded-2xl font-black text-xl hover:bg-orange-700 transition transform hover:scale-[1.02] active:scale-95 shadow-lg shadow-orange-100">Proceed to Pay</button>
+            <button onclick="goToAddressStep()" class="w-full bg-orange-600 text-white py-5 rounded-2xl font-black text-xl hover:bg-orange-700 transition shadow-lg">Proceed to Pay →</button>
         </div>
     </div>
+    
     <div id="cart-overlay" onclick="toggleCart()" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[140] hidden opacity-0 transition-opacity"></div>
+
+    <div id="address-modal" class="fixed inset-0 z-[300] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="fixed inset-0 bg-black/70 backdrop-blur-md" onclick="closeAddressModal()"></div>
+        <div class="bg-white w-full max-w-lg mx-4 rounded-[40px] relative z-[301] shadow-2xl overflow-hidden">
+            <div class="bg-orange-600 p-6 text-white">
+                <button onclick="closeAddressModal()" class="absolute top-5 right-6 text-white text-3xl font-light">×</button>
+                <div class="flex items-center space-x-3">
+                    <span class="text-3xl">📍</span>
+                    <div>
+                        <h3 class="text-2xl font-black">Delivery Address</h3>
+                        <p class="text-orange-100 text-sm font-medium">CB Ganj & nearby areas only</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-8 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs font-bold text-gray-500 uppercase mb-1 block">Full Name *</label>
+                        <input type="text" id="addr-name" placeholder="Aapka Naam" class="w-full px-4 py-3 rounded-2xl bg-gray-100 outline-none focus:ring-2 focus:ring-orange-500 text-gray-800 font-medium text-sm">
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-gray-500 uppercase mb-1 block">Phone *</label>
+                        <input type="tel" id="addr-phone" placeholder="10-digit number" class="w-full px-4 py-3 rounded-2xl bg-gray-100 outline-none focus:ring-2 focus:ring-orange-500 text-gray-800 font-medium text-sm">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase mb-1 block">House / Flat No. *</label>
+                    <input type="text" id="addr-house" placeholder="e.g. H-42, Krishna Nagar" class="w-full px-4 py-3 rounded-2xl bg-gray-100 outline-none focus:ring-2 focus:ring-orange-500 text-gray-800 font-medium text-sm">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase mb-1 block">Street / Area *</label>
+                    <input type="text" id="addr-street" placeholder="e.g. CB Ganj, Near Water Tank" class="w-full px-4 py-3 rounded-2xl bg-gray-100 outline-none focus:ring-2 focus:ring-orange-500 text-gray-800 font-medium text-sm">
+                </div>
+                <div>
+                    <label class="text-xs font-bold text-gray-500 uppercase mb-1 block">Landmark (Optional)</label>
+                    <input type="text" id="addr-landmark" placeholder="e.g. Opposite SBI Bank" class="w-full px-4 py-3 rounded-2xl bg-gray-100 outline-none focus:ring-2 focus:ring-orange-500 text-gray-800 font-medium text-sm">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="text-xs font-bold text-gray-500 uppercase mb-1 block">City</label>
+                        <input type="text" id="addr-city" value="Bareilly" class="w-full px-4 py-3 rounded-2xl bg-gray-100 outline-none text-gray-600 font-medium text-sm" readonly>
+                    </div>
+                    <div>
+                        <label class="text-xs font-bold text-gray-500 uppercase mb-1 block">Pincode *</label>
+                        <input type="text" id="addr-pin" placeholder="e.g. 243001" maxlength="6" class="w-full px-4 py-3 rounded-2xl bg-gray-100 outline-none focus:ring-2 focus:ring-orange-500 text-gray-800 font-medium text-sm">
+                    </div>
+                </div>
+                <div class="bg-orange-50 border border-orange-200 rounded-2xl p-4 flex items-center space-x-3">
+                    <span class="text-2xl">🛵</span>
+                    <div>
+                        <p class="font-black text-gray-900 text-sm">Estimated Delivery Time</p>
+                        <p id="eta-text" class="text-orange-600 font-bold text-sm">Enter pincode to see ETA</p>
+                    </div>
+                </div>
+                <button onclick="confirmAddress()" class="w-full bg-gray-900 text-white py-4 rounded-2xl font-black text-lg hover:bg-orange-600 transition shadow-lg mt-2">Confirm Address & Pay →</button>
+            </div>
+        </div>
+    </div>
 
     <div id="checkout-modal" class="fixed inset-0 z-[400] flex items-center justify-center hidden opacity-0 transition-opacity duration-500">
         <div class="fixed inset-0 bg-gray-950/90 backdrop-blur-xl" onclick="closeCheckoutModal()"></div>
-        
         <div class="bg-gray-100 w-full max-w-md relative z-[401] mx-4 rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
-            
             <div class="bg-green-500 text-white p-6 text-center shrink-0">
                 <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center text-green-500 text-3xl mx-auto mb-3 shadow-lg font-black">✓</div>
                 <h3 class="text-2xl font-black">Order Placed!</h3>
-                <p class="text-green-100 text-sm font-medium mt-1">Wait 10s for kitchen confirmation...</p>
+                <p class="text-green-100 text-sm mt-1" id="receipt-address-display"></p>
             </div>
-
             <div class="p-6 overflow-y-auto no-scrollbar bg-gray-100 flex-1">
                 <div id="printable-receipt" class="p-6 bg-white mx-auto shadow-sm border border-gray-200 relative">
                     <h4 class="text-center font-black text-2xl text-orange-600 mb-1 tracking-tighter">WOW FOOD</h4>
-                    <p class="text-center text-[10px] text-gray-500 font-bold border-b border-dashed border-gray-300 pb-3 mb-4 uppercase tracking-widest">CB Ganj, Bareilly | Order #<span id="order-id"></span></p>
-                    
+                    <p class="text-center text-[10px] text-gray-500 font-bold border-b border-dashed border-gray-300 pb-3 mb-4 uppercase tracking-widest">Order #<span id="order-id"></span></p>
                     <div id="receipt-body" class="space-y-2 mb-4 text-sm text-gray-800 font-medium"></div>
-                    
+                    <div id="receipt-address-block" class="bg-gray-50 rounded-xl p-3 mb-4 text-xs text-gray-600 font-medium border border-gray-100">
+                        <p class="font-bold text-gray-800 text-xs uppercase tracking-wider mb-1">📍 Delivery To</p>
+                        <p id="rcpt-address"></p>
+                    </div>
                     <div class="border-t border-dashed border-gray-300 pt-3 space-y-2 text-sm">
                         <div class="flex justify-between"><span class="text-gray-500">Item Total</span><span id="rcpt-subtotal" class="font-bold text-gray-900">₹0</span></div>
                         <div class="flex justify-between text-green-600 hidden" id="rcpt-discount-row"><span>Discount (<span id="rcpt-promo-name"></span>)</span><span id="rcpt-discount" class="font-bold">-₹0</span></div>
                         <div class="flex justify-between"><span class="text-gray-500">GST (5%)</span><span id="rcpt-gst" class="font-bold text-gray-900">₹0</span></div>
                         <div class="flex justify-between"><span class="text-gray-500">Delivery Charge</span><span id="rcpt-delivery" class="font-bold text-gray-900">₹0</span></div>
                     </div>
-
-                    <div class="border-t border-gray-800 mt-4 pt-3 flex justify-between items-center">
-                        <span class="font-black text-gray-900">Grand Total</span>
-                        <span id="receipt-total" class="text-2xl font-black text-orange-600">₹0</span>
-                    </div>
-                    
+                    <div class="border-t border-gray-800 mt-4 pt-3 flex justify-between items-center"><span class="font-black text-gray-900">Grand Total</span><span id="receipt-total" class="text-2xl font-black text-orange-600">₹0</span></div>
                     <p class="text-xs text-center text-gray-500 mt-4 font-bold bg-gray-50 py-2 rounded-lg">Payment Mode: <span id="rcpt-payment-mode" class="text-gray-800 uppercase"></span></p>
-
                     <div class="mt-6 text-center pt-4">
                         <p class="text-[10px] text-gray-400 uppercase tracking-widest">Digitally Signed By</p>
-                        <p class="font-black text-gray-800 italic mt-1 font-serif" id="rcpt-customer-name">Utkarsh & Sneha</p>
+                        <p class="font-black text-gray-800 italic mt-1 font-serif" id="rcpt-customer-name"></p>
                     </div>
-                    <span class="receipt-edge absolute bottom-0 left-0"></span>
                 </div>
             </div>
-
             <div class="p-6 shrink-0 bg-white border-t border-gray-200">
-                <button onclick="downloadPDF()" class="w-full mb-4 bg-gray-900 text-white font-bold py-3 rounded-xl hover:bg-orange-600 transition flex items-center justify-center gap-2 shadow-lg">
-                    <span class="text-xl">📄</span> Download Bill as PDF
-                </button>
-
+                <button onclick="downloadPDF()" class="w-full mb-4 bg-gray-900 text-white font-bold py-3 rounded-xl hover:bg-orange-600 transition flex items-center justify-center gap-2">📄 Download Bill</button>
                 <div class="mb-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs font-bold text-gray-500 uppercase">Cancellation Window</span>
-                        <span id="panic-timer" class="text-xs font-black text-red-500">10s</span>
-                    </div>
-                    <div class="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
-                        <div id="panic-progress" class="bg-red-500 h-full w-full transition-all duration-1000 ease-linear"></div>
-                    </div>
+                    <div class="flex justify-between items-center mb-2"><span class="text-xs font-bold text-gray-500 uppercase">Cancel Window</span><span id="panic-timer" class="text-xs font-black text-red-500">10s</span></div>
+                    <div class="w-full bg-gray-200 h-2 rounded-full overflow-hidden"><div id="panic-progress" class="bg-red-500 h-full w-full transition-all duration-1000 ease-linear"></div></div>
                     <button id="cancel-order-btn" onclick="cancelOrder()" class="w-full mt-3 bg-red-50 font-bold text-red-600 py-2 rounded-xl text-sm border border-red-200 hover:bg-red-500 hover:text-white transition">Cancel Order</button>
                 </div>
-
-                <div class="relative pt-6 pb-2">
-                    <div class="w-full bg-gray-200 h-1 absolute top-8 left-0 rounded-full"></div>
-                    <div id="scooter-icon" class="absolute top-4 left-0 text-3xl transform -translate-x-1/2 z-10 filter drop-shadow-md">🛵</div>
-                    
-                    <div class="flex justify-between relative z-0 mt-6">
-                        <div class="text-center w-1/3">
-                            <div class="w-3 h-3 bg-green-500 rounded-full mx-auto mb-1 relative z-10 ring-4 ring-white"></div>
-                            <p class="text-[10px] font-bold text-gray-600">Accepted</p>
-                        </div>
-                        <div class="text-center w-1/3">
-                            <div id="tl-step-2" class="w-3 h-3 bg-gray-200 rounded-full mx-auto mb-1 relative z-10 ring-4 ring-white transition-colors duration-300"></div>
-                            <p class="text-[10px] font-bold text-gray-600">Cooking</p>
-                        </div>
-                        <div class="text-center w-1/3">
-                            <div id="tl-step-3" class="w-3 h-3 bg-gray-200 rounded-full mx-auto mb-1 relative z-10 ring-4 ring-white transition-colors duration-300"></div>
-                            <p class="text-[10px] font-bold text-gray-600">Delivered</p>
-                        </div>
-                    </div>
-                </div>
+                <div class="relative pt-6 pb-2"><div class="w-full bg-gray-200 h-1 absolute top-8 left-0 rounded-full"></div><div id="scooter-icon" class="absolute top-4 left-0 text-3xl transform -translate-x-1/2 z-10 filter drop-shadow-md">🛵</div></div>
             </div>
-            
-            <button onclick="closeCheckoutModal()" class="absolute top-4 right-4 text-white hover:text-gray-200 text-3xl font-light">×</button>
+            <button onclick="closeCheckoutModal()" class="absolute top-4 right-4 text-white text-3xl font-light">×</button>
         </div>
     </div>
 
     <div id="orders-modal" class="fixed inset-0 z-[500] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
         <div class="fixed inset-0 bg-black/70 backdrop-blur-md" onclick="toggleMyOrders()"></div>
-        <div class="bg-white w-full max-w-2xl p-8 rounded-[40px] relative z-[501] shadow-2xl mx-4 max-h-[80vh] flex flex-col border-t-8 border-orange-600">
+        <div class="bg-white w-full max-w-2xl p-8 rounded-[40px] relative z-[501] shadow-2xl mx-4 max-h-[85vh] flex flex-col border-t-8 border-orange-600">
             <button onclick="toggleMyOrders()" class="absolute top-6 right-6 text-gray-400 text-3xl hover:text-gray-800">×</button>
-            <h3 class="text-3xl font-black text-gray-900 mb-6">My <span class="text-orange-600">Orders</span> 🍔</h3>
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-3xl font-black text-gray-900">My <span class="text-orange-600">Orders</span> 🍔</h3>
+                <button onclick="fetchMyOrders()" class="text-xs font-bold text-orange-600 bg-orange-50 px-3 py-1.5 rounded-xl border border-orange-200 hover:bg-orange-100 transition">🔄 Refresh</button>
+            </div>
             <div id="my-orders-list" class="overflow-y-auto pr-2 space-y-4 flex-1 no-scrollbar">
                 <p class="text-center text-gray-400 font-bold italic mt-10">Loading your delicious history...</p>
             </div>
+        </div>
+    </div>
+
+    <div id="review-modal" class="fixed inset-0 z-[600] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <div class="fixed inset-0 bg-black/80 backdrop-blur-sm" onclick="closeReviewModal()"></div>
+        <div class="bg-white w-full max-w-md p-8 rounded-[40px] relative z-[601] shadow-2xl mx-4 text-center">
+            <button onclick="closeReviewModal()" class="absolute top-6 right-6 text-gray-400 text-2xl hover:text-gray-800">×</button>
+            <h3 class="text-2xl font-black text-gray-900 mb-2">Rate Your Food 😋</h3>
+            <p class="text-sm text-gray-500 font-medium mb-6">Order #<span id="review-order-id-display"></span></p>
+            <div class="flex justify-center space-x-2 text-4xl text-gray-300 mb-6" id="star-container">
+                <span class="star-btn" onclick="setRating(1)">★</span><span class="star-btn" onclick="setRating(2)">★</span><span class="star-btn" onclick="setRating(3)">★</span><span class="star-btn" onclick="setRating(4)">★</span><span class="star-btn" onclick="setRating(5)">★</span>
+            </div>
+            <textarea id="review-text" rows="3" placeholder="Tell us what you loved... (Optional)" class="w-full px-4 py-3 rounded-2xl bg-gray-100 outline-none focus:ring-2 focus:ring-orange-500 text-gray-800 mb-4 resize-none"></textarea>
+            <button onclick="submitReview()" class="w-full bg-orange-600 text-white py-3 rounded-2xl font-bold text-lg hover:bg-gray-900 transition">Submit Review</button>
         </div>
     </div>
 
@@ -378,639 +571,1085 @@
         </div>
     </div>
 
-    <button onclick="toggleChat()" class="fixed bottom-32 right-10 bg-gray-900 text-white p-5 rounded-3xl shadow-2xl z-[110] hover:scale-110 transition flex items-center border-b-4 border-orange-600"><span class="text-3xl">🤖</span></button>
-    <div id="ai-chat" class="fixed bottom-10 right-10 w-[350px] md:w-[420px] h-[550px] bg-white shadow-2xl z-[200] rounded-[40px] flex flex-col overflow-hidden transform translate-y-[120%] transition-transform duration-500 border border-orange-50">
-        <div class="p-6 bg-gray-900 text-white flex justify-between items-center"><div><h4 class="font-bold">Wow Concierge</h4><p class="text-[10px] text-green-400 font-bold uppercase">Active Now</p></div><button onclick="toggleChat()" class="text-2xl hover:text-orange-500">×</button></div>
-        <div id="chat-messages" class="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50 no-scrollbar">
-            <div class="bg-orange-100 text-gray-800 p-4 rounded-3xl mb-2 text-sm max-w-[85%] shadow-sm font-medium">Namaste! Main Wow Concierge hoon. 🎙️ Aap mic par click karke bol sakte hain.</div>
+    <button id="faq-btn-main" onclick="toggleFAQ()" 
+        class="fixed bottom-10 left-6 md:left-10 bg-white border-2 border-orange-500 text-orange-600 p-4 rounded-3xl shadow-2xl z-[110] flex items-center space-x-2 group"
+        title="Quick FAQ">
+        <span class="text-2xl">💬</span>
+        <span class="text-xs font-black hidden group-hover:inline transition-all">Quick Help</span>
+        <span id="faq-notif-dot" class="absolute -top-1 -right-1 w-3 h-3 bg-orange-500 rounded-full animate-ping"></span>
+    </button>
+
+    <div id="faq-panel" class="faq-hidden fixed bottom-28 left-6 md:left-10 w-[320px] md:w-[380px] bg-white rounded-[28px] shadow-2xl z-[120] border border-orange-100 overflow-hidden"
+        style="max-height: 520px;">
+        
+        <div class="bg-gradient-to-r from-orange-600 to-orange-500 p-4 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 bg-white/20 rounded-xl flex items-center justify-center text-lg">❓</div>
+                <div>
+                    <h4 class="font-black text-white text-sm">Quick FAQ</h4>
+                    <p class="text-orange-100 text-[10px] font-bold">Instant answers — no typing!</p>
+                </div>
+            </div>
+            <button onclick="toggleFAQ()" class="text-white/80 hover:text-white text-xl font-light">×</button>
         </div>
-        <div id="typing" class="px-6 py-2 text-[10px] text-gray-400 font-bold italic hidden uppercase">AI is thinking...</div>
-        <div class="p-4 bg-white border-t flex items-center space-x-2">
-            <button onclick="startVoice()" class="p-3 text-gray-400 hover:text-orange-600 transition" title="Use Voice">🎙️</button>
-            <input type="text" id="chat-input" placeholder="Type or ask..." class="flex-1 bg-gray-100 border-none outline-none px-4 py-3 rounded-2xl text-sm font-medium text-gray-800">
+
+        <div class="flex gap-2 px-4 pt-3 pb-1 overflow-x-auto no-scrollbar">
+            <button onclick="setFaqCategory('popular')" class="faq-category-tab active" id="tab-popular">⭐ Popular</button>
+            <button onclick="setFaqCategory('menu')" class="faq-category-tab" id="tab-menu">🍽️ Menu</button>
+            <button onclick="setFaqCategory('delivery')" class="faq-category-tab" id="tab-delivery">🛵 Delivery</button>
+            <button onclick="setFaqCategory('payment')" class="faq-category-tab" id="tab-payment">💰 Payment</button>
+            <button onclick="setFaqCategory('other')" class="faq-category-tab" id="tab-other">ℹ️ Other</button>
+        </div>
+
+        <div id="faq-questions-area" class="px-4 pt-2 pb-3 flex flex-wrap gap-2 overflow-y-auto" style="max-height: 170px;">
+        </div>
+
+        <div id="faq-answer-area" class="mx-4 mb-4 hidden">
+            <div id="faq-answer-bubble" class="faq-answer-bubble bg-orange-50 border border-orange-100 rounded-2xl p-4">
+                <p id="faq-answer-text" class="text-sm text-gray-800 font-medium leading-relaxed"></p>
+                <div id="faq-answer-action" class="mt-3 hidden">
+                    <button id="faq-action-btn" class="text-xs bg-orange-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-gray-900 transition"></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-100 px-4 py-3 flex items-center justify-between bg-gray-50">
+            <p class="text-[10px] text-gray-400 font-medium">Zyada sawaal? AI se poochho 👉</p>
+            <button onclick="toggleFAQ(); setTimeout(toggleChat, 200);" class="text-[10px] font-black text-orange-600 bg-orange-50 px-3 py-1.5 rounded-xl border border-orange-200 hover:bg-orange-500 hover:text-white transition">Open AI Chat 🤖</button>
+        </div>
+    </div>
+
+    <button onclick="toggleChat()" class="fixed bottom-32 right-10 bg-gray-900 text-white p-5 rounded-3xl shadow-2xl z-[110] hover:scale-110 transition flex items-center border-b-4 border-orange-600 group">
+        <span class="text-3xl">🤖</span>
+        <span class="ml-2 text-xs font-bold text-orange-400 hidden group-hover:inline">AI Chef</span>
+    </button>
+    <div id="ai-chat" class="fixed bottom-10 right-10 w-[350px] md:w-[420px] h-[580px] bg-white shadow-2xl z-[200] rounded-[40px] flex flex-col overflow-hidden transform translate-y-[120%] transition-transform duration-500 border border-orange-50">
+        <div class="p-5 bg-gray-900 text-white flex justify-between items-center shrink-0">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-orange-600 rounded-2xl flex items-center justify-center text-xl font-black">W</div>
+                <div>
+                    <h4 class="font-black text-sm">Wow Concierge AI</h4>
+                    <p class="text-[10px] text-green-400 font-bold uppercase flex items-center"><span class="w-1.5 h-1.5 bg-green-400 rounded-full mr-1 animate-pulse"></span>Powered by Claude AI</p>
+                </div>
+            </div>
+            <button onclick="toggleChat()" class="text-2xl hover:text-orange-500 transition">×</button>
+        </div>
+        <div id="chat-messages" class="flex-1 overflow-y-auto p-5 space-y-3 bg-gray-50 no-scrollbar">
+            <div class="bg-orange-100 text-gray-800 p-4 rounded-3xl rounded-tl-lg mb-2 text-sm max-w-[88%] shadow-sm font-medium chat-msg-enter">
+                Namaste! 🙏 Main hoon <b>Wow Concierge</b> — Claude AI se powered.<br><br>Menu ke baare mein kuch bhi poochho, discount maango, ya order track karo! 🍽️
+            </div>
+        </div>
+        <div id="typing-indicator" class="px-5 py-2 hidden">
+            <div class="bg-orange-50 rounded-2xl p-3 inline-block">
+                <div class="typing-dots flex items-center space-x-1">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+        </div>
+        <div class="p-4 bg-white border-t border-gray-100 flex items-center space-x-2 shrink-0">
+            <button onclick="startVoice()" class="p-3 text-gray-400 hover:text-orange-600 transition" title="Voice Input">🎙️</button>
+            <input type="text" id="chat-input" placeholder="Kuch bhi poochho..." class="flex-1 bg-gray-100 border-none outline-none px-4 py-3 rounded-2xl text-sm font-medium text-gray-800 focus:ring-2 focus:ring-orange-300">
             <button onclick="handleChat()" class="bg-orange-600 text-white p-3 rounded-2xl hover:bg-gray-900 transition">🚀</button>
         </div>
     </div>
 
-    <div id="social-proof" class="fixed bottom-8 left-8 bg-white shadow-2xl rounded-3xl p-5 flex items-center space-x-5 border border-orange-50 transform translate-y-48 transition-all duration-1000 z-[100] max-w-sm">
-        <div id="sp-icon" class="text-4xl bg-orange-100 p-3 rounded-2xl shadow-inner">🍔</div>
-        <div><p class="text-[11px] text-orange-600 font-black uppercase">Live Order from CB Ganj</p><p id="sp-message" class="text-sm text-gray-800 font-semibold"></p></div>
-    </div>
-
     <script>
-      // --- 1. LIVE BACKEND DATA CONNECTION ---
-        let menuItems = [];
+    // =============================================
+    // CORE STATE
+    // =============================================
+    let menuItems = [];
+    let cart = JSON.parse(localStorage.getItem('wowCart')) || [];
+    let currentTotal = 0, discountMultiplier = 1, appliedPromo = "";
+    let panicTimer;
+    let deliveryAddress = {};
+    let chatHistory = [];
 
-        async function fetchMenuFromDatabase() {
-            try {
-                const response = await fetch('http://localhost:8080/api/menu');
-                const backendData = await response.json(); 
-                
-                menuItems = backendData.map(item => ({
-                    ...item,
-                    img: item.imageUrl 
-                }));
-                
-                applyGoldenHourUI(); 
-                displaySpecials(); 
-                updateCartUI();
-                
-                showToast("Live Server!", "Menu fetched from Wow Food Database 🚀", "🟢");
-            } catch (error) {
-                console.error("Backend Connect Nahi Hua:", error);
-                showToast("Server Error", "Please start IntelliJ Backend Server!", "🔴");
-            }
-        }
+    const lenis = new Lenis({ lerp: 0.1, duration: 1.2, smoothWheel: true });
+    function raf(t) { lenis.raf(t); requestAnimationFrame(raf); } requestAnimationFrame(raf);
+    gsap.registerPlugin(ScrollTrigger);
+
+    // =============================================
+    // TOAST
+    // =============================================
+    window.showToast = function(title, message, icon) {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = 'bg-white p-4 rounded-2xl shadow-2xl border-l-4 border-orange-500 flex items-center space-x-4 transform translate-x-[150%] transition-all duration-500 w-80 pointer-events-auto mt-2';
+        toast.innerHTML = `<div class="text-3xl">${icon}</div><div><h4 class="font-bold text-gray-900 text-sm">${title}</h4><p class="text-xs text-gray-500 font-medium">${message}</p></div>`;
+        container.appendChild(toast);
+        setTimeout(() => toast.classList.remove('translate-x-[150%]'), 10);
+        setTimeout(() => { toast.classList.add('translate-x-[150%]', 'opacity-0'); setTimeout(() => toast.remove(), 500); }, 4000);
+    }
+
+    // =============================================
+    // MOBILE NAVIGATION
+    // =============================================
+    let mobileMenuOpen = false;
+    window.toggleMobileMenu = function() {
+        mobileMenuOpen = !mobileMenuOpen;
+        const menu = document.getElementById('mobile-menu');
+        const l1 = document.getElementById('ham-line1');
+        const l2 = document.getElementById('ham-line2');
+        const l3 = document.getElementById('ham-line3');
         
-        // --- 2. GLOBAL STATE ---
-        let cart = JSON.parse(localStorage.getItem('wowCart')) || [];
-        function saveCart() { localStorage.setItem('wowCart', JSON.stringify(cart)); }
-        
-        let currentTotal = 0;
-        let splitCount = 1;
-        let discountMultiplier = 1;
-        let appliedPromo = "";
-        let panicTimer;
-
-        const lenis = new Lenis({ lerp: 0.1, duration: 1.2, smoothWheel: true });
-        function raf(t) { lenis.raf(t); requestAnimationFrame(raf); }
-        requestAnimationFrame(raf);
-        gsap.registerPlugin(ScrollTrigger);
-
-        // --- 3. TOAST NOTIFICATIONS ---
-        window.showToast = function(title, message, icon) {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = 'bg-white p-4 rounded-2xl shadow-2xl border-l-4 border-orange-500 flex items-center space-x-4 transform translate-x-[150%] transition-all duration-500 w-80 pointer-events-auto mt-2';
-            toast.innerHTML = `<div class="text-3xl">${icon}</div><div><h4 class="font-bold text-gray-900 text-sm">${title}</h4><p class="text-xs text-gray-500 font-medium">${message}</p></div>`;
-            container.appendChild(toast);
-            setTimeout(() => toast.classList.remove('translate-x-[150%]'), 10);
-            setTimeout(() => { toast.classList.add('translate-x-[150%]', 'opacity-0'); setTimeout(() => toast.remove(), 500); }, 4000);
+        if (mobileMenuOpen) {
+            menu.classList.remove('hidden');
+            gsap.from(menu, { opacity: 0, y: -20, duration: 0.3 });
+            l1.style.transform = 'rotate(45deg) translate(5px, 6px)';
+            l2.style.opacity = '0';
+            l3.style.transform = 'rotate(-45deg) translate(5px, -6px)';
+            l3.style.width = '24px';
+        } else {
+            gsap.to(menu, { opacity: 0, y: -10, duration: 0.2, onComplete: () => menu.classList.add('hidden') });
+            l1.style.transform = ''; l2.style.opacity = '1'; l3.style.transform = ''; l3.style.width = '16px';
         }
+    }
 
-        // --- 4. MOOD AI ---
-        window.setMood = function(mood) {
-            let recommended = [];
-            let msg = "";
-            if(mood === 'sad') { recommended = menuItems.filter(i => i.cat === 'Dessert' || i.name.includes('Chai')); msg = "Don't be sad! Kuch meetha ho jaye? 🍨"; } 
-            else if(mood === 'party') { recommended = menuItems.filter(i => i.cat === 'Starters' || i.name.includes('Biryani')); msg = "Party Time! Tikkas aur Biryani try karein. 🎉"; } 
-            else if(mood === 'sleepy') { recommended = menuItems.filter(i => i.cat === 'Drinks' && (i.name.includes('Coffee') || i.name.includes('Chai'))); msg = "Wake up! Ek kadak Chai ya Coffee zaroori hai. ☕"; } 
-            else if(mood === 'angry') { recommended = menuItems.filter(i => i.name.includes('Tikka') || i.name.includes('Masala') || i.name.includes('Rogan')); msg = "Cool down! Kuch spicy khake gussa shant karein. 🔥"; }
-            showToast("Mood Detected!", msg, "🤖");
-            displayMenu(recommended);
-            document.getElementById('menu').scrollIntoView({behavior: 'smooth'});
-        };
-
-        // --- 5. RENDER MENU ---
-        function displayMenu(items) {
-            const container = document.getElementById('menu-container');
-            if(!container) return;
-            container.innerHTML = items.map(item => `
-                <div class="menu-card bg-white p-4 rounded-[40px] shadow-sm hover:shadow-2xl flex flex-col group border-2 border-transparent hover:border-orange-50">
-                    <div class="w-full h-44 mb-6 overflow-hidden rounded-[30px] bg-gray-100 shadow-inner">
-                        <img src="${item.img}" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700" loading="lazy" alt="${item.name}">
+    function updateMobileAuthSection() {
+        const user = JSON.parse(localStorage.getItem('wowUser'));
+        const mobileAuth = document.getElementById('mobile-auth-section');
+        if (!mobileAuth) return;
+        if (user) {
+            mobileAuth.innerHTML = `
+                <div class="bg-orange-50 p-3 rounded-2xl border border-orange-100 text-center">
+                    <p class="font-black text-gray-900">Hi, ${user.fullName.split(' ')[0]}! 👋</p>
+                    <div class="flex space-x-2 mt-2">
+                        <button onclick="toggleMyOrders(); toggleMobileMenu();" class="flex-1 bg-orange-600 text-white py-2 rounded-xl text-sm font-bold">My Orders</button>
+                        <button onclick="logoutUser()" class="flex-1 border border-red-300 text-red-500 py-2 rounded-xl text-sm font-bold">Logout</button>
                     </div>
-                    <h4 class="text-xl font-black text-gray-800 mb-1 px-2">${item.name}</h4>
-                    <p class="text-[10px] text-gray-400 font-bold mb-6 uppercase tracking-widest px-2">${item.cat}</p>
-                    <div class="flex justify-between items-center mt-auto px-2 pb-2">
-                        <span class="text-orange-600 font-extrabold text-2xl">₹${item.price}</span>
-                        <button onclick="addToCart(${item.id})" class="bg-gray-900 text-white px-6 py-2 rounded-2xl hover:bg-orange-600 transition active:scale-95 shadow-lg font-bold text-sm">Add +</button>
-                    </div>
-                </div>`).join('');
-            gsap.from(".menu-card", { opacity: 0, y: 30, stagger: 0.04, duration: 0.5 });
+                </div>`;
+        } else {
+            mobileAuth.innerHTML = `
+                <button onclick="toggleLogin(); toggleMobileMenu();" class="w-full bg-orange-600 text-white py-3 rounded-2xl font-bold text-lg mb-2">Login</button>
+                <button onclick="toggleSignup(); toggleMobileMenu();" class="w-full border-2 border-orange-600 text-orange-600 py-3 rounded-2xl font-bold text-lg">Sign Up</button>`;
         }
+    }
 
-        function displaySpecials() {
-            document.getElementById('specials-container').innerHTML = menuItems.filter(i => i.special).map(item => `
-                <div class="min-w-[320px] bg-white p-4 rounded-[40px] shadow-xl border-b-8 border-orange-500 flex items-center space-x-6 transform hover:scale-105 transition duration-500 group">
-                    <div class="w-20 h-20 overflow-hidden rounded-2xl flex-shrink-0 shadow-lg">
-                        <img src="${item.img}" class="w-full h-full object-cover" alt="${item.name}">
-                    </div>
-                    <div><h4 class="font-black text-xl text-gray-900">${item.name}</h4><p class="text-orange-600 font-extrabold text-lg mt-1">₹${item.price}</p></div>
-                </div>`).join('');
-        }
+    // =============================================
+    // AUTH & MENU DISPLAY
+    // =============================================
+    function checkAuthStatus() { 
+        const user = JSON.parse(localStorage.getItem('wowUser')); 
+        const authSection = document.getElementById('auth-section'); 
+        const menuSection = document.getElementById('menu');
+        const specialsSection = document.getElementById('specials-section');
+        const promoLanding = document.getElementById('promo-landing');
+        const heroBtn = document.getElementById('hero-main-btn');
 
-        window.handleSearch = function() {
-            const q = document.getElementById('menu-search').value.toLowerCase();
-            displayMenu(menuItems.filter(i => i.name.toLowerCase().includes(q) || i.cat.toLowerCase().includes(q)));
-        };
-
-        window.filterMenu = function(category) {
-            document.querySelectorAll('.cat-btn').forEach(btn => {
-                const active = btn.innerText === category || (category === 'Bread' && btn.innerText === 'Breads');
-                btn.className = `cat-btn px-8 py-3 rounded-full border-2 border-orange-600 font-bold transition ${active ? 'bg-orange-600 text-white' : 'text-orange-600 bg-transparent'}`;
-            });
-            displayMenu(category === 'All' ? menuItems : menuItems.filter(i => i.cat === category));
-        };
-
-        // --- 6. CART SYSTEM ---
-        window.toggleCart = function() {
-            document.getElementById('cart-sidebar').classList.toggle('translate-x-full');
-            const overlay = document.getElementById('cart-overlay');
-            overlay.classList.toggle('hidden');
-            setTimeout(() => overlay.classList.toggle('opacity-100'), 10);
-        };
-
-        window.addToCart = function(id) {
-            const item = menuItems.find(i => i.id === id);
-            const exists = cart.find(i => i.id === id);
-            if(exists) { exists.qty++; } else { cart.push({...item, qty: 1}); }
-            updateCartUI();
-            showToast("Added to Cart!", `${item.name} added successfully.`, "😋");
-            gsap.fromTo("#cart-count", {scale: 2}, {scale: 1, duration: 0.5});
-        };
-
-        function updateCartUI() {
-            const container = document.getElementById('cart-items');
-            document.getElementById('cart-count').innerText = cart.reduce((acc, i) => acc + i.qty, 0);
-            
-            const splitUI = document.getElementById('split-bill-ui');
-            const promoUI = document.getElementById('promo-ui');
-            const paymentUI = document.getElementById('payment-ui');
-            
-            if (cart.length === 0) { 
-                container.innerHTML = `<div class="text-center mt-32 italic text-gray-300 font-bold">Cart is Empty 🍽️</div>`; 
-                document.getElementById('cart-total').innerText = `₹0`; 
-                splitUI.classList.add('hidden'); promoUI.classList.add('hidden'); paymentUI.classList.add('hidden');
-                currentTotal = 0; saveCart(); return; 
-            }
-            
-            currentTotal = 0;
-            container.innerHTML = cart.map(item => { 
-                currentTotal += item.price * item.qty; 
-                return `
-                <div class="flex items-center justify-between bg-white p-4 rounded-3xl border shadow-sm">
-                    <div class="flex items-center space-x-4">
-                        <img src="${item.img}" class="w-12 h-12 rounded-xl object-cover">
-                        <div><h4 class="font-black text-gray-900 text-sm">${item.name}</h4><p class="text-orange-600 font-bold text-xs">₹${item.price}</p></div>
-                    </div>
-                    <div class="flex items-center space-x-3 bg-orange-50 px-3 py-1 rounded-xl">
-                        <button onclick="changeQty(${item.id}, -1)" class="text-orange-600 font-black">-</button>
-                        <span class="font-black">${item.qty}</span>
-                        <button onclick="changeQty(${item.id}, 1)" class="text-orange-600 font-black">+</button>
-                    </div>
+        if(user) { 
+            if(authSection) authSection.innerHTML = `
+                <div class="bg-orange-50 px-4 py-2 rounded-full border border-orange-200 flex items-center space-x-3 shadow-sm">
+                    <span class="font-black text-gray-800 text-sm">Hi, ${user.fullName.split(' ')[0]}</span>
+                    <button onclick="toggleMyOrders()" class="text-xs text-orange-600 font-bold hover:underline border-l border-orange-200 pl-3">My Orders</button>
+                    <button onclick="logoutUser()" class="text-xs text-red-500 font-bold hover:underline ml-2">Logout</button>
                 </div>`; 
-            }).join('');
-            
-            splitUI.classList.remove('hidden'); promoUI.classList.remove('hidden'); paymentUI.classList.remove('hidden');
-            let finalTotal = currentTotal * discountMultiplier;
-            
-            if(appliedPromo) {
-                document.getElementById('cart-total').innerHTML = `<span class="line-through text-gray-400 text-sm mr-2">₹${currentTotal}</span>₹${finalTotal.toFixed(2)}`;
-            } else {
-                document.getElementById('cart-total').innerText = `₹${currentTotal}`;
-            }
-            
-            calculateSplit(finalTotal);
-            saveCart();
+            if(menuSection) menuSection.classList.remove('hidden');
+            if(specialsSection) specialsSection.classList.remove('hidden');
+            if(promoLanding) promoLanding.classList.add('hidden');
+            if(heroBtn) { heroBtn.innerText = "Browse Full Menu 🍔"; heroBtn.href = "#menu"; heroBtn.onclick = null; }
+            if(menuItems.length === 0) fetchMenuFromDatabase();
+        } else {
+            if(authSection) authSection.innerHTML = `
+                <div class="text-orange-600 border-2 border-orange-600 px-5 py-1.5 rounded-full hover:bg-orange-600 hover:text-white transition flex items-center space-x-1 cursor-pointer">
+                    <button onclick="toggleLogin()" class="font-bold hover:underline">Login</button>
+                    <span class="font-light opacity-60">/</span>
+                    <button onclick="toggleSignup()" class="font-bold hover:underline">Sign Up</button>
+                </div>`;
+            if(menuSection) menuSection.classList.add('hidden');
+            if(specialsSection) specialsSection.classList.add('hidden');
+            if(promoLanding) promoLanding.classList.remove('hidden');
+            if(heroBtn) { heroBtn.innerText = "Login to Unlock Menu 🔓"; heroBtn.href = "javascript:void(0)"; heroBtn.onclick = toggleLogin; }
         }
+        updateMobileAuthSection();
+    }
 
-        window.changeQty = function(id, delta) {
-            const item = cart.find(x => x.id === id);
-            if(item) { item.qty += delta; if(item.qty < 1) cart = cart.filter(x => x.id !== id); }
-            updateCartUI();
-        };
-
-        window.applyPromo = function() {
-            const code = document.getElementById('promo-code').value.toUpperCase().trim();
-            if(code === 'DOSTI10') { discountMultiplier = 0.9; appliedPromo = "DOSTI10"; showToast("Code Applied!", "10% Founder's Discount activated!", "🤝"); } 
-            else if(code === 'WOW25' && currentTotal >= 450) { discountMultiplier = 0.75; appliedPromo = "WOW25"; showToast("Awesome!", "25% OFF applied successfully!", "🎉"); } 
-            else if(code === 'WOW25') { showToast("Order More!", "Order must be above ₹450 to use WOW25.", "⚠️"); } 
-            else { showToast("Invalid Code", "Ask the Chatbot for a secret code!", "❌"); }
-            updateCartUI();
-        };
-
-        window.changeSplit = function(delta) { if(splitCount + delta >= 1 && splitCount + delta <= 10) { splitCount += delta; document.getElementById('split-count').innerText = splitCount; updateCartUI(); } };
-        function calculateSplit(total) { if(splitCount > 0) { document.getElementById('split-amount').innerText = `₹${(total / splitCount).toFixed(2)}`; } }
-        window.shareWhatsApp = function() {
-            let finalTotal = currentTotal * discountMultiplier;
-            if(finalTotal > 0 && splitCount > 1) {
-                const perPerson = (finalTotal / splitCount).toFixed(2);
-                const msg = encodeURIComponent(`Hey! 🍔 I ordered from Wow Food (CB Ganj). Your share of the bill is ₹${perPerson}. Please UPI me soon!`);
-                window.open(`https://wa.me/?text=${msg}`, '_blank');
-            } else { showToast("Oops!", "Add more than 1 person to split.", "💬"); }
-        };
-
-        // --- 7. PREMIUM CHECKOUT (API CONNECTED + DYNAMIC USER + RAZORPAY) ---
-        window.checkout = async function() { 
-            if(cart.length === 0) return; 
-
-            // 1. Bill Calculate karo
-            let subtotal = currentTotal;
-            let discountAmt = subtotal * (1 - discountMultiplier);
-            let afterDiscount = subtotal - discountAmt;
-            let gst = afterDiscount * 0.05;
-            let delivery = afterDiscount > 400 ? 0 : 40; 
-            let finalGrandTotal = afterDiscount + gst + delivery;
-            let paymentMode = document.getElementById('payment-mode').value;
-
-            // DYNAMIC USER NAME LOGIC
-            const loggedInUser = JSON.parse(localStorage.getItem('wowUser'));
-            const customerName = loggedInUser ? loggedInUser.fullName : "Guest User";
-            const customerEmail = loggedInUser ? loggedInUser.email : "guest@wowfood.com";
-            const customerPhone = loggedInUser ? loggedInUser.phone : "9999999999";
-
-            if (paymentMode === "Cash on Delivery") {
-                // Agar COD hai toh seedha save karo
-                saveFinalOrderToDB(customerName, finalGrandTotal, paymentMode, subtotal, discountAmt, gst, delivery);
-            } else {
-                // Agar Online payment hai toh pehle Razorpay kholo
-                try {
-                    showToast("Connecting Bank...", "Opening secure payment gateway.", "🏦");
-                    
-                    // Step 1: Backend se Razorpay Order ID mangwao
-                    const response = await fetch('http://localhost:8080/api/payment/createOrder', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ amount: Math.round(finalGrandTotal) }) // Amount in Rupees sent to Java
-                    });
-                    
-                    if (!response.ok) throw new Error("Payment API Failed");
-                    const orderData = await response.json();
-
-                    // Step 2: Razorpay Popup kholne ki settings
-                    const options = {
-                        "key": "rzp_test_STtZsNYQJIvgGG", // AAPKI PUBLIC TEST KEY YAHAN HAI
-                        "amount": orderData.amount, // Amount in paise
-                        "currency": "INR",
-                        "name": "Wow Food",
-                        "description": "CB Ganj Cloud Kitchen",
-                        "image": "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=100", // Logo
-                        "order_id": orderData.id, // Order ID generated by your Backend
-                        "handler": function (response) {
-                            showToast("Payment Successful!", "Payment received via Razorpay. 🎉", "💸");
-                            saveFinalOrderToDB(customerName, finalGrandTotal, "Razorpay (Paid Online)", subtotal, discountAmt, gst, delivery);
-                        },
-                        "prefill": {
-                            "name": customerName,
-                            "email": customerEmail,
-                            "contact": customerPhone
-                        },
-                        "theme": { "color": "#ea580c" }
-                    };
-
-                    const rzp = new Razorpay(options);
-                    rzp.on('payment.failed', function (response){
-                        showToast("Payment Failed", response.error.description, "❌");
-                    });
-                    rzp.open();
-
-                } catch (error) {
-                    console.error("Razorpay Error:", error);
-                    showToast("Error", "Backend Payment API error. Check IntelliJ.", "🔴");
+    async function fetchMenuFromDatabase() {
+        try {
+            const response = await fetch('https://wow-food-backend.onrender.com/');
+            const backendData = await response.json(); 
+            const uniqueMenu = [];
+            const seenNames = new Set();
+            backendData.forEach(item => {
+                const itemName = item.name ? item.name.toLowerCase().trim() : "";
+                if (itemName && !seenNames.has(itemName)) {
+                    seenNames.add(itemName);
+                    uniqueMenu.push({ ...item, cat: item.cat || item.category || "Main Course", img: item.imageUrl || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c" });
                 }
-            }
-        };
-
-        async function saveFinalOrderToDB(customerName, finalGrandTotal, paymentMode, subtotal, discountAmt, gst, delivery) {
-            const orderDetails = { userName: customerName, totalAmount: finalGrandTotal, paymentMode: paymentMode };
-
-            try {
-                showToast("Processing", "Sending order to Wow Food Kitchen...", "⏳");
-                
-                const response = await fetch('http://localhost:8080/api/orders', {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(orderDetails)
-                });
-                
-                const savedOrder = await response.json();
-                
-                document.getElementById('order-id').innerText = savedOrder.id; 
-                document.getElementById('rcpt-payment-mode').innerText = savedOrder.paymentMode;
-                document.getElementById('rcpt-customer-name').innerText = customerName; 
-                
-                const receiptItemsHtml = cart.map(i => `<div class="flex justify-between py-1"><span class="text-gray-600">${i.qty}x ${i.name}</span><span class="font-bold text-gray-900">₹${i.price * i.qty}</span></div>`).join('');
-                document.getElementById('receipt-body').innerHTML = receiptItemsHtml;
-                
-                document.getElementById('rcpt-subtotal').innerText = `₹${subtotal.toFixed(2)}`;
-                if(appliedPromo) {
-                    document.getElementById('rcpt-discount-row').classList.remove('hidden');
-                    document.getElementById('rcpt-promo-name').innerText = appliedPromo;
-                    document.getElementById('rcpt-discount').innerText = `-₹${discountAmt.toFixed(2)}`;
-                } else {
-                    document.getElementById('rcpt-discount-row').classList.add('hidden');
-                }
-                document.getElementById('rcpt-gst').innerText = `₹${gst.toFixed(2)}`;
-                document.getElementById('rcpt-delivery').innerText = delivery === 0 ? "FREE" : `₹${delivery.toFixed(2)}`;
-                document.getElementById('receipt-total').innerText = `₹${finalGrandTotal.toFixed(2)}`;
-
-                cart = []; appliedPromo = ""; discountMultiplier = 1; document.getElementById('promo-code').value = '';
-                updateCartUI(); 
-                toggleCart(); 
-                
-                const modal = document.getElementById('checkout-modal'); 
-                modal.classList.remove('hidden'); 
-                setTimeout(() => modal.classList.add('opacity-100'), 10); 
-                
-                startPanicBar(); 
-
-            } catch (error) {
-                console.error("Order Fail:", error);
-                showToast("Error", "Server se connect nahi hua.", "❌");
-            }
-        }
-
-        function startPanicBar() {
-            let time = 10;
-            const progress = document.getElementById('panic-progress');
-            const timerTxt = document.getElementById('panic-timer');
-            const btn = document.getElementById('cancel-order-btn');
-            
-            progress.style.width = '100%'; progress.style.transition = 'none';
-            btn.disabled = false; btn.innerText = "Cancel Order"; btn.className = "w-full mt-3 bg-red-50 font-bold text-red-600 py-2 rounded-xl text-sm border border-red-200 hover:bg-red-500 hover:text-white transition";
-            clearInterval(panicTimer);
-            
-            setTimeout(() => { progress.style.transition = 'width 1s linear'; }, 50);
-            
-            panicTimer = setInterval(() => {
-                time--; 
-                timerTxt.innerText = `${time}s`; 
-                progress.style.width = `${(time/10)*100}%`;
-                
-                if(time <= 0) {
-                    clearInterval(panicTimer); 
-                    btn.disabled = true; 
-                    btn.innerText = "Order Locked. Preparing now!";
-                    btn.className = "w-full mt-3 bg-gray-200 font-bold text-gray-500 py-2 rounded-xl text-sm border border-gray-300 cursor-not-allowed transition";
-                    timerTxt.innerText = "0s";
-                    startScooterAnimation();
-                }
-            }, 1000);
-        }
-
-        function startScooterAnimation() {
-            gsap.set("#scooter-icon", { left: "0%" });
-            document.getElementById('tl-step-2').className = "w-3 h-3 bg-gray-200 rounded-full mx-auto mb-1 relative z-10 ring-4 ring-white transition-colors duration-300";
-            document.getElementById('tl-step-3').className = "w-3 h-3 bg-gray-200 rounded-full mx-auto mb-1 relative z-10 ring-4 ring-white transition-colors duration-300";
-            
-            gsap.to("#scooter-icon", { left: "100%", duration: 8, ease: "power1.inOut" });
-
-            showToast("Order Confirmed", "Kitchen has started preparing your food.", "📝");
-            setTimeout(() => { document.getElementById('tl-step-2').classList.replace('bg-gray-200', 'bg-green-500'); showToast("Cooking Started", "Chef Sneha is on it.", "👨‍🍳"); }, 3000);
-            setTimeout(() => { document.getElementById('tl-step-3').classList.replace('bg-gray-200', 'bg-green-500'); showToast("Out for Delivery", "Rider is heading to your location in CB Ganj!", "🛵"); }, 7000);
-        }
-
-        window.cancelOrder = function() {
-            clearInterval(panicTimer);
-            document.getElementById('cancel-order-btn').innerText = "Order Cancelled successfully!";
-            document.getElementById('cancel-order-btn').className = "w-full mt-3 bg-gray-900 font-bold text-white py-2 rounded-xl text-sm transition";
-            gsap.killTweensOf("#scooter-icon");
-            showToast("Cancelled", "Your order has been cancelled.", "🚫");
-            setTimeout(closeCheckoutModal, 2000);
-        };
-
-        window.closeCheckoutModal = function() { 
-            const m = document.getElementById('checkout-modal');
-            m.classList.remove('opacity-100'); setTimeout(() => m.classList.add('hidden'), 500); 
-            clearInterval(panicTimer);
-        };
-
-        window.downloadPDF = function() {
-            showToast("Preparing PDF", "Generating your digital bill...", "⏳");
-            
-            const originalReceipt = document.getElementById('printable-receipt');
-            
-            const tempDiv = document.createElement('div');
-            tempDiv.style.position = 'absolute';
-            tempDiv.style.top = '0';
-            tempDiv.style.left = '0';
-            tempDiv.style.width = '400px'; 
-            tempDiv.style.backgroundColor = '#ffffff'; 
-            tempDiv.style.padding = '20px';
-            tempDiv.style.zIndex = '-1'; 
-            
-            const clone = originalReceipt.cloneNode(true);
-            tempDiv.appendChild(clone);
-            document.body.appendChild(tempDiv);
-
-            const opt = {
-                margin:       0.2, 
-                filename:     `WowFood_Bill_${document.getElementById('order-id').innerText}.pdf`,
-                image:        { type: 'jpeg', quality: 1 },
-                html2canvas:  { 
-                    scale: 2, 
-                    useCORS: true, 
-                    scrollY: 0, 
-                    scrollX: 0
-                },
-                jsPDF:        { unit: 'in', format: 'a5', orientation: 'portrait' }
-            };
-
-            html2pdf().set(opt).from(tempDiv).save().then(() => {
-                document.body.removeChild(tempDiv);
-                showToast("Downloaded!", "Your bill is saved successfully.", "📄");
-            }).catch(err => {
-                console.error("PDF Error: ", err);
-                document.body.removeChild(tempDiv);
-                showToast("Error", "Could not download PDF.", "❌");
             });
-        };
+            menuItems = uniqueMenu;
+            applyGoldenHourUI(); 
+            displaySpecials();
+            updateCartUI();
+        } catch (error) {
+            console.error(error);
+            showToast("Server Error", "Please start IntelliJ Backend Server!", "🔴");
+        }
+    }
+
+    function displayMenu(items) {
+        const container = document.getElementById('menu-container');
+        if(!container) return;
+        if(items.length === 0) {
+            container.innerHTML = `<div class="col-span-full text-center text-gray-400 font-bold text-xl py-10">No items found 🍳</div>`;
+            return;
+        }
+        container.innerHTML = items.map(item => `
+            <div class="menu-card bg-white p-4 rounded-[40px] shadow-sm hover:shadow-2xl flex flex-col group border-2 border-transparent hover:border-orange-50">
+                <div class="w-full h-44 mb-6 overflow-hidden rounded-[30px] bg-gray-100 shadow-inner">
+                    <img src="${item.img}" class="w-full h-full object-cover transform group-hover:scale-110 transition duration-700" loading="lazy" alt="${item.name}">
+                </div>
+                <h4 class="text-xl font-black text-gray-800 mb-1 px-2">${item.name}</h4>
+                <p class="text-[10px] text-gray-400 font-bold mb-6 uppercase tracking-widest px-2">${item.cat}</p>
+                <div class="flex justify-between items-center mt-auto px-2 pb-2">
+                    <span class="text-orange-600 font-extrabold text-2xl">₹${item.price}</span>
+                    <button onclick="addToCart(${item.id})" class="bg-gray-900 text-white px-6 py-2 rounded-2xl hover:bg-orange-600 transition active:scale-95 shadow-lg font-bold text-sm">Add +</button>
+                </div>
+            </div>`).join('');
+        gsap.from(".menu-card", { opacity: 0, y: 30, stagger: 0.04, duration: 0.5 });
+    }
+
+    function displaySpecials() {
+        const sp = document.getElementById('specials-container');
+        if(sp) sp.innerHTML = menuItems.filter(i => i.special).map(item => `
+            <div class="min-w-[320px] bg-white p-4 rounded-[40px] shadow-xl border-b-8 border-orange-500 flex items-center space-x-6 transform hover:scale-105 transition duration-500">
+                <div class="w-20 h-20 overflow-hidden rounded-2xl flex-shrink-0 shadow-lg"><img src="${item.img}" class="w-full h-full object-cover"></div>
+                <div><h4 class="font-black text-xl text-gray-900">${item.name}</h4><p class="text-orange-600 font-extrabold text-lg mt-1">₹${item.price}</p></div>
+            </div>`).join('');
+    }
+
+    window.filterMenu = function(category) {
+        document.querySelectorAll('.cat-btn').forEach(btn => {
+            const btnText = btn.innerText.trim();
+            const active = btnText.toLowerCase() === category.toLowerCase() || (category === 'Bread' && btnText === 'Breads');
+            btn.className = `cat-btn px-8 py-3 rounded-full border-2 border-orange-600 font-bold transition ${active ? 'bg-orange-600 text-white shadow-md' : 'text-orange-600 bg-transparent hover:bg-orange-600 hover:text-white'}`;
+        });
+        if(category === 'All') { displayMenu(menuItems); }
+        else { displayMenu(menuItems.filter(i => { const itemCat = (i.cat||"").toLowerCase(); const t = category.toLowerCase(); return itemCat === t || (t==='bread'&&itemCat==='breads'); })); }
+    };
+
+    window.handleSearch = function() {
+        const q = document.getElementById('menu-search').value.toLowerCase();
+        displayMenu(menuItems.filter(i => (i.name||"").toLowerCase().includes(q) || (i.cat||"").toLowerCase().includes(q)));
+    };
+
+    // =============================================
+    // CART
+    // =============================================
+    window.toggleCart = function() { 
+        document.getElementById('cart-sidebar').classList.toggle('translate-x-full'); 
+        document.getElementById('cart-overlay').classList.toggle('hidden'); 
+        setTimeout(() => document.getElementById('cart-overlay').classList.toggle('opacity-100'), 10); 
+    };
+    
+    window.addToCart = function(id) { 
+        const item = menuItems.find(i => i.id === id); 
+        const exists = cart.find(i => i.id === id); 
+        if(exists) { exists.qty++; } else { cart.push({...item, qty: 1}); } 
+        updateCartUI(); 
+        showToast("Added!", `${item.name} cart mein add ho gaya.`, "😋"); 
+        gsap.fromTo("#cart-count", {scale: 2}, {scale: 1, duration: 0.5}); 
+        gsap.fromTo("#cart-count-mobile", {scale: 2}, {scale: 1, duration: 0.5}); 
+    };
+    
+    function updateCartUI() { 
+        const container = document.getElementById('cart-items'); 
+        const totalCount = cart.reduce((acc, i) => acc + i.qty, 0);
+        document.getElementById('cart-count').innerText = totalCount; 
+        document.getElementById('cart-count-mobile').innerText = totalCount;
+        const promoUI = document.getElementById('promo-ui'); 
+        const paymentUI = document.getElementById('payment-ui'); 
         
-        // --- 8. AUTHENTICATION & MY ORDERS ---
-        window.toggleLogin = function() { const m = document.getElementById('login-modal'); m.classList.toggle('hidden'); setTimeout(() => m.classList.toggle('opacity-100'), 10); };
-        window.toggleSignup = function() { const m = document.getElementById('signup-modal'); m.classList.toggle('hidden'); setTimeout(() => m.classList.toggle('opacity-100'), 10); };
+        if (cart.length === 0) { 
+            container.innerHTML = `<div class="text-center mt-32 italic text-gray-300 font-bold text-xl">Cart is Empty 🍽️<br><span class="text-sm font-medium mt-2 block">Kuch mazedar order karein!</span></div>`; 
+            document.getElementById('cart-total').innerText = `₹0`; 
+            promoUI.classList.add('hidden'); paymentUI.classList.add('hidden'); 
+            currentTotal = 0; localStorage.setItem('wowCart', JSON.stringify(cart)); 
+            return; 
+        } 
         
-        window.handleSignup = async function() { 
-            const name = document.getElementById('signup-name').value;
-            const phone = document.getElementById('signup-phone').value;
-            const email = document.getElementById('signup-email').value;
-            const pass = document.getElementById('signup-pass').value;
+        currentTotal = 0; 
+        container.innerHTML = cart.map(item => { 
+            currentTotal += item.price * item.qty; 
+            return `
+            <div class="flex items-center justify-between bg-white p-5 rounded-[2rem] border border-gray-100 shadow-md hover:shadow-xl transition-shadow duration-300 mb-2">
+                <div class="flex items-center space-x-4">
+                    <div class="w-16 h-16 rounded-2xl overflow-hidden shadow-sm shrink-0">
+                        <img src="${item.img}" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <h4 class="font-black text-gray-900 text-sm leading-tight mb-1">${item.name}</h4>
+                        <p class="text-orange-600 font-extrabold text-sm">₹${item.price}</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3 bg-gray-50 px-3 py-2 rounded-2xl border border-gray-200">
+                    <button onclick="changeQty(${item.id}, -1)" class="text-orange-600 font-black text-xl hover:scale-125 transition">-</button>
+                    <span class="font-black text-gray-900">${item.qty}</span>
+                    <button onclick="changeQty(${item.id}, 1)" class="text-orange-600 font-black text-xl hover:scale-125 transition">+</button>
+                </div>
+            </div>`; 
+        }).join(''); 
+        
+        promoUI.classList.remove('hidden'); paymentUI.classList.remove('hidden'); 
+        let finalTotal = currentTotal * discountMultiplier; 
+        if(appliedPromo) { 
+            document.getElementById('cart-total').innerHTML = `<span class="line-through text-gray-400 text-sm mr-2">₹${currentTotal}</span>₹${finalTotal.toFixed(2)}`; 
+        } else { 
+            document.getElementById('cart-total').innerText = `₹${currentTotal}`; 
+        } 
+        localStorage.setItem('wowCart', JSON.stringify(cart)); 
+    }
 
-            if(!name || !phone || !pass) return showToast("Required", "Please fill name, phone and password.", "⚠️");
+    window.changeQty = function(id, delta) { 
+        const item = cart.find(x => x.id === id); 
+        if(item) { item.qty += delta; if(item.qty < 1) cart = cart.filter(x => x.id !== id); } 
+        updateCartUI(); 
+    };
 
-            const userData = { fullName: name, phone: phone, email: email, password: pass };
+    window.applyPromo = function() { 
+        const code = document.getElementById('promo-code').value.toUpperCase().trim(); 
+        if(code === 'DOSTI10') { discountMultiplier = 0.9; appliedPromo = "DOSTI10"; showToast("Code Applied!", "10% Founder's Discount activated!", "🤝"); } 
+        else if(code === 'WOW25' && currentTotal >= 450) { discountMultiplier = 0.75; appliedPromo = "WOW25"; showToast("Awesome!", "25% OFF applied!", "🎉"); } 
+        else if(code === 'WOW25') { showToast("Order More!", "₹450 se upar order karo WOW25 ke liye.", "⚠️"); } 
+        else { showToast("Invalid Code", "Chatbot se secret code maango!", "❌"); } 
+        updateCartUI(); 
+    };
 
-            try {
-                const res = await fetch('http://localhost:8080/api/users/signup', {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(userData)
-                });
-                
-                if(res.ok) {
-                    showToast("Welcome!", "Account created. Please login.", "🎉");
-                    toggleSignup(); setTimeout(toggleLogin, 500);
-                } else {
-                    showToast("Failed", "Phone number already exists!", "❌");
-                }
-            } catch(e) { showToast("Error", "Server disconnected.", "🔴"); }
+    // =============================================
+    // ADDRESS FLOW
+    // =============================================
+    window.goToAddressStep = function() {
+        if(cart.length === 0) return;
+        const user = JSON.parse(localStorage.getItem('wowUser'));
+        if(user) {
+            const nameEl = document.getElementById('addr-name');
+            const phoneEl = document.getElementById('addr-phone');
+            if(nameEl && !nameEl.value) nameEl.value = user.fullName || '';
+            if(phoneEl && !phoneEl.value) phoneEl.value = user.phone || '';
+        }
+        toggleCart();
+        const m = document.getElementById('address-modal');
+        m.classList.remove('hidden');
+        setTimeout(() => m.classList.add('opacity-100'), 10);
+        gsap.from('.address-modal-content', { y: 30, opacity: 0, duration: 0.4 });
+    };
+
+    window.closeAddressModal = function() {
+        const m = document.getElementById('address-modal');
+        m.classList.remove('opacity-100');
+        setTimeout(() => m.classList.add('hidden'), 300);
+    };
+
+    document.getElementById('addr-pin')?.addEventListener('input', function() {
+        const pin = this.value.trim();
+        const etaEl = document.getElementById('eta-text');
+        if (pin.length === 6) {
+            const nearbyPins = ['243001', '243002', '243003', '243005', '243006'];
+            if (nearbyPins.some(p => pin.startsWith(p.slice(0,3)))) {
+                etaEl.innerText = '⚡ 20-30 minutes';
+                etaEl.className = 'text-green-600 font-bold text-sm';
+            } else if (pin.startsWith('243')) {
+                etaEl.innerText = '🕐 35-50 minutes';
+                etaEl.className = 'text-orange-600 font-bold text-sm';
+            } else {
+                etaEl.innerText = '⚠️ We may not deliver here';
+                etaEl.className = 'text-red-500 font-bold text-sm';
+            }
+        } else {
+            etaEl.innerText = 'Enter pincode to see ETA';
+            etaEl.className = 'text-orange-600 font-bold text-sm';
+        }
+    });
+
+    window.confirmAddress = function() {
+        const name = document.getElementById('addr-name').value.trim();
+        const phone = document.getElementById('addr-phone').value.trim();
+        const house = document.getElementById('addr-house').value.trim();
+        const street = document.getElementById('addr-street').value.trim();
+        const pin = document.getElementById('addr-pin').value.trim();
+        if(!name || !phone || !house || !street || !pin) { showToast("Required Fields", "Saare zaroori fields fill karo.", "⚠️"); return; }
+        if(phone.length !== 10) { showToast("Invalid Phone", "10 digit ka phone number daalo.", "⚠️"); return; }
+        deliveryAddress = {
+            name, phone, house, street,
+            landmark: document.getElementById('addr-landmark').value.trim(),
+            city: 'Bareilly', pin,
+            full: `${house}, ${street}${document.getElementById('addr-landmark').value ? ', ' + document.getElementById('addr-landmark').value : ''}, Bareilly - ${pin}`
         };
+        closeAddressModal();
+        setTimeout(() => checkout(), 300);
+    };
 
-        window.handleLogin = async function() { 
-            const id = document.getElementById('login-id').value; 
-            const pass = document.getElementById('login-pass').value;
-
-            if(!id || !pass) return showToast("Required", "Enter ID and Password.", "⚠️");
-
-            const loginData = { email: id, phone: id, password: pass };
-
-            try {
-                const res = await fetch('http://localhost:8080/api/users/login', {
-                    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(loginData)
-                });
-                
-                if(res.ok) {
-                    const user = await res.json();
-                    localStorage.setItem('wowUser', JSON.stringify(user)); 
-                    showToast("Welcome Back!", `Hi, ${user.fullName} 👋`, "🔑");
-                    toggleLogin();
-                    checkAuthStatus(); 
-                } else {
-                    showToast("Failed", "Wrong ID or Password!", "❌");
-                }
-            } catch(e) { showToast("Error", "Server disconnected.", "🔴"); }
-        };
-
-        function checkAuthStatus() {
-            const user = JSON.parse(localStorage.getItem('wowUser'));
-            const authSection = document.getElementById('auth-section');
-            if(user && authSection) {
-                authSection.innerHTML = `
-                    <div class="bg-orange-50 px-4 py-2 rounded-full border border-orange-200 flex items-center space-x-3 shadow-sm">
-                        <span class="font-black text-gray-800 text-sm">Hi, ${user.fullName.split(' ')[0]}</span>
-                        <button onclick="toggleMyOrders()" class="text-xs text-orange-600 font-bold hover:underline border-l border-orange-200 pl-3">My Orders</button>
-                        <button onclick="logoutUser()" class="text-xs text-red-500 font-bold hover:underline ml-2">Logout</button>
-                    </div>`;
+    // =============================================
+    // CHECKOUT & PAYMENT - FIXED ERROR HANDLING
+    // =============================================
+    window.checkout = async function() { 
+        if(cart.length === 0) return; 
+        let subtotal = currentTotal; 
+        let discountAmt = subtotal * (1 - discountMultiplier); 
+        let afterDiscount = subtotal - discountAmt; 
+        let gst = afterDiscount * 0.05; 
+        let delivery = afterDiscount > 400 ? 0 : 40; 
+        let finalGrandTotal = afterDiscount + gst + delivery; 
+        let paymentMode = document.getElementById('payment-mode').value;
+        const loggedInUser = JSON.parse(localStorage.getItem('wowUser')); 
+        const customerName = loggedInUser ? loggedInUser.fullName : deliveryAddress.name || "Guest User"; 
+        const customerEmail = loggedInUser ? loggedInUser.email : "guest@wowfood.com"; 
+        const customerPhone = deliveryAddress.phone || (loggedInUser ? loggedInUser.phone : "9999999999");
+        
+        if (paymentMode === "Cash on Delivery") { 
+            saveFinalOrderToDB(customerName, finalGrandTotal, paymentMode, subtotal, discountAmt, gst, delivery); 
+        } else {
+            try { 
+                showToast("Connecting Bank...", "Secure payment gateway open ho rahi hai.", "🏦"); 
+                const response = await fetch('https://wow-food-backend.onrender.com//api/payment/createOrder', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ amount: Math.round(finalGrandTotal) }) }); 
+                const orderData = await response.json(); 
+                const options = { 
+                    "key": "rzp_test_STtZsNYQJIvgGG", 
+                    "amount": orderData.amount, "currency": "INR", 
+                    "name": "Wow Food", "order_id": orderData.id, 
+                    "handler": function () { saveFinalOrderToDB(customerName, finalGrandTotal, "Razorpay (Paid Online)", subtotal, discountAmt, gst, delivery); }, 
+                    "prefill": { "name": customerName, "email": customerEmail, "contact": customerPhone }, 
+                    "theme": { "color": "#ea580c" } 
+                }; 
+                const rzp = new Razorpay(options); rzp.open(); 
+            } catch (error) { 
+                showToast("Error", "Payment API error. IntelliJ check karo.", "🔴"); 
             }
         }
+    };
 
-        window.logoutUser = function() {
-            localStorage.removeItem('wowUser');
-            location.reload(); 
-        };
-
-        // NEW: MY ORDERS LOGIC
-        window.toggleMyOrders = function() {
-            const m = document.getElementById('orders-modal');
-            m.classList.toggle('hidden');
-            setTimeout(() => m.classList.toggle('opacity-100'), 10);
-            if (!m.classList.contains('hidden')) {
-                fetchMyOrders();
-            }
-        };
-
-        async function fetchMyOrders() {
-            const user = JSON.parse(localStorage.getItem('wowUser'));
-            if (!user) return;
+    // YAHAN PAR FIX KIYA HAI! Ab error chhupenge nahi, properly dikhenge aur MySQL me zaroor jayenge
+    async function saveFinalOrderToDB(customerName, finalGrandTotal, paymentMode, subtotal, discountAmt, gst, delivery) {
+        try { 
+            showToast("Processing", "Order kitchen mein ja raha hai...", "⏳"); 
+            let savedOrder = { id: Math.floor(Math.random() * 90000) + 10000, paymentMode: paymentMode }; 
             
             try {
-                const res = await fetch(`http://localhost:8080/api/orders/user/${user.fullName}`);
-                const orders = await res.json();
-                
-                const container = document.getElementById('my-orders-list');
-                
-                if (orders.length === 0) {
-                    container.innerHTML = `<p class="text-center text-gray-400 font-bold mt-10">No orders yet. Time to order some Biryani! 😋</p>`;
-                    return;
+                const response = await fetch('https://wow-food-backend.onrender.com//api/orders', { 
+                    method: 'POST', headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify({ 
+                        userName: customerName, 
+                        totalAmount: finalGrandTotal, 
+                        paymentMode: paymentMode, 
+                        deliveryAddress: deliveryAddress.full || "N/A" 
+                    }) 
+                });
+                if(response.ok) { 
+                    const data = await response.json().catch(()=>null); 
+                    if(data && data.id) savedOrder.id = data.id; 
+                } else {
+                    console.error("Backend Error: Status", response.status);
+                    showToast("Warning", "Order Backend mein save nahi hua!", "⚠️");
                 }
-                
-                container.innerHTML = orders.map(o => {
-                    let statusColor = o.status === 'DELIVERED' ? 'text-green-500 bg-green-50' : (o.status === 'COOKING' ? 'text-yellow-600 bg-yellow-50' : 'text-orange-500 bg-orange-50');
+            } catch(netError) { 
+                console.error("Network Error - Backend is down:", netError);
+                showToast("Server Error", "Spring Boot Backend band hai! Start karo.", "🔴"); 
+            }
+
+            const safeSetText = (id, text) => { const el = document.getElementById(id); if(el) el.innerText = text; };
+            safeSetText('order-id', savedOrder.id);
+            safeSetText('rcpt-payment-mode', savedOrder.paymentMode || paymentMode);
+            safeSetText('rcpt-customer-name', customerName); 
+            safeSetText('rcpt-subtotal', `₹${subtotal.toFixed(2)}`);
+            safeSetText('rcpt-gst', `₹${gst.toFixed(2)}`);
+            safeSetText('rcpt-delivery', delivery === 0 ? "FREE" : `₹${delivery.toFixed(2)}`);
+            safeSetText('receipt-total', `₹${finalGrandTotal.toFixed(2)}`);
+            safeSetText('rcpt-address', deliveryAddress.full || "N/A");
+            safeSetText('receipt-address-display', `📍 ${deliveryAddress.street || 'CB Ganj, Bareilly'}`);
+
+            const receiptBody = document.getElementById('receipt-body');
+            if(receiptBody) {
+                receiptBody.innerHTML = cart.map(i => `<div class="flex justify-between py-1"><span class="text-gray-600">${i.qty}x ${i.name}</span><span class="font-bold text-gray-900">₹${i.price * i.qty}</span></div>`).join(''); 
+            }
+            const discountRow = document.getElementById('rcpt-discount-row');
+            if(appliedPromo && discountRow) { 
+                discountRow.classList.remove('hidden'); 
+                safeSetText('rcpt-promo-name', appliedPromo);
+                safeSetText('rcpt-discount', `-₹${discountAmt.toFixed(2)}`);
+            } else if(discountRow) { discountRow.classList.add('hidden'); }
+            
+            cart = []; appliedPromo = ""; discountMultiplier = 1; deliveryAddress = {};
+            const promoInput = document.getElementById('promo-code');
+            if(promoInput) promoInput.value = ''; 
+            updateCartUI(); 
+            const modal = document.getElementById('checkout-modal'); 
+            if(modal) { modal.classList.remove('hidden'); setTimeout(() => modal.classList.add('opacity-100'), 10); }
+            startPanicBar(); 
+        } catch (error) { 
+            console.error("UI Error:", error);
+            showToast("Error", "Bill generate karne mein dikkat aayi.", "❌"); 
+        }
+    }
+
+    function startPanicBar() { 
+        let time = 10; 
+        const progress = document.getElementById('panic-progress'); 
+        const timerTxt = document.getElementById('panic-timer'); 
+        const btn = document.getElementById('cancel-order-btn'); 
+        progress.style.width = '100%'; progress.style.transition = 'none'; 
+        btn.disabled = false; btn.innerText = "Cancel Order"; 
+        btn.className = "w-full mt-3 bg-red-50 font-bold text-red-600 py-2 rounded-xl text-sm border border-red-200 hover:bg-red-500 hover:text-white transition"; 
+        clearInterval(panicTimer); 
+        setTimeout(() => { progress.style.transition = 'width 1s linear'; }, 50); 
+        panicTimer = setInterval(() => { 
+            time--; timerTxt.innerText = `${time}s`; progress.style.width = `${(time/10)*100}%`; 
+            if(time <= 0) { 
+                clearInterval(panicTimer); btn.disabled = true; btn.innerText = "Order Locked! Preparing now 🔒"; 
+                btn.className = "w-full mt-3 bg-gray-200 font-bold text-gray-500 py-2 rounded-xl text-sm cursor-not-allowed"; 
+                timerTxt.innerText = "0s"; startScooterAnimation(); 
+            } 
+        }, 1000); 
+    }
+
+    function startScooterAnimation() { 
+        gsap.set("#scooter-icon", { left: "0%" }); 
+        gsap.to("#scooter-icon", { left: "100%", duration: 8, ease: "power1.inOut" }); 
+        showToast("Order Confirmed", "Kitchen mein preparation shuru!", "📝"); 
+        setTimeout(() => showToast("Cooking 🔥", "Chef Sneha is on it!", "👨‍🍳"), 3000); 
+        setTimeout(() => showToast("Out for Delivery", "Rider CB Ganj ki taraf aa raha hai!", "🛵"), 7000); 
+    }
+
+    window.cancelOrder = function() { 
+        clearInterval(panicTimer); 
+        document.getElementById('cancel-order-btn').innerText = "Order Cancelled!"; 
+        document.getElementById('cancel-order-btn').className = "w-full mt-3 bg-gray-900 font-bold text-white py-2 rounded-xl text-sm"; 
+        gsap.killTweensOf("#scooter-icon"); 
+        showToast("Cancelled", "Aapka order cancel ho gaya.", "🚫"); 
+        setTimeout(closeCheckoutModal, 2000); 
+    };
+
+    window.closeCheckoutModal = function() { 
+        const m = document.getElementById('checkout-modal'); 
+        m.classList.remove('opacity-100'); 
+        setTimeout(() => m.classList.add('hidden'), 500); 
+        clearInterval(panicTimer); 
+    };
+    
+    window.downloadPDF = function() { 
+        showToast("Preparing PDF", "Digital bill generate ho rahi hai...", "⏳"); 
+        const tempDiv = document.createElement('div'); 
+        tempDiv.style.cssText = 'position:absolute;top:0;left:0;width:400px;background-color:#ffffff;padding:20px;z-index:-1;'; 
+        tempDiv.appendChild(document.getElementById('printable-receipt').cloneNode(true)); 
+        document.body.appendChild(tempDiv); 
+        html2pdf().set({ margin: 0.2, filename: `WowFood_Bill_${document.getElementById('order-id').innerText}.pdf`, image: { type: 'jpeg', quality: 1 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'in', format: 'a5', orientation: 'portrait' } }).from(tempDiv).save().then(() => { document.body.removeChild(tempDiv); showToast("Downloaded!", "Bill save ho gayi.", "📄"); }); 
+    };
+
+    // =============================================
+    // AUTH
+    // =============================================
+    window.toggleLogin = function() { const m = document.getElementById('login-modal'); m.classList.toggle('hidden'); setTimeout(() => m.classList.toggle('opacity-100'), 10); };
+    window.toggleSignup = function() { const m = document.getElementById('signup-modal'); m.classList.toggle('hidden'); setTimeout(() => m.classList.toggle('opacity-100'), 10); };
+    
+    window.handleSignup = async function() { 
+        const n=document.getElementById('signup-name').value, p=document.getElementById('signup-phone').value, e=document.getElementById('signup-email').value, pw=document.getElementById('signup-pass').value; 
+        if(!n||!p||!pw) return showToast("Required", "Saare fields fill karo.", "⚠️"); 
+        try { 
+            const res = await fetch('https://wow-food-backend.onrender.com//api/users/signup', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fullName: n, phone: p, email: e, password: pw }) }); 
+            if(res.ok) { showToast("Welcome!", "Account bana lo. Ab login karo.", "🎉"); toggleSignup(); setTimeout(toggleLogin, 500); } 
+            else showToast("Failed", "Phone number already exists!", "❌"); 
+        } catch(e) { showToast("Error", "Server disconnected.", "🔴"); } 
+    };
+    
+    window.handleLogin = async function() { 
+        const id=document.getElementById('login-id').value, pw=document.getElementById('login-pass').value; 
+        if(!id||!pw) return showToast("Required", "ID aur Password daalo.", "⚠️"); 
+        try { 
+            const res = await fetch('https://wow-food-backend.onrender.com//api/users/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: id, phone: id, password: pw }) }); 
+            if(res.ok) { const user = await res.json(); localStorage.setItem('wowUser', JSON.stringify(user)); showToast("Welcome Back!", `Hi, ${user.fullName} 👋`, "🔑"); toggleLogin(); checkAuthStatus(); } 
+            else showToast("Failed", "Wrong ID ya Password!", "❌"); 
+        } catch(e) { showToast("Error", "Server disconnected.", "🔴"); } 
+    };
+    
+    window.logoutUser = function() { localStorage.removeItem('wowUser'); location.reload(); };
+
+    // =============================================
+    // MY ORDERS WITH STATUS TIMELINE
+    // =============================================
+    window.toggleMyOrders = function() { 
+        const m = document.getElementById('orders-modal'); 
+        m.classList.toggle('hidden'); 
+        setTimeout(() => m.classList.toggle('opacity-100'), 10); 
+        if (!m.classList.contains('hidden')) fetchMyOrders(); 
+    };
+    
+    window.fetchMyOrders = async function() { 
+        const user = JSON.parse(localStorage.getItem('wowUser')); 
+        if (!user) return; 
+        const container = document.getElementById('my-orders-list');
+        container.innerHTML = `<div class="flex justify-center py-10"><div class="typing-dots flex items-center space-x-2"><span></span><span></span><span></span></div></div>`;
+        try { 
+            const res = await fetch(`https://wow-food-backend.onrender.com//api/orders/user/${user.fullName}`); 
+            const orders = await res.json(); 
+            if (orders.length === 0) { 
+                container.innerHTML = `<p class="text-center text-gray-400 font-bold mt-10">Abhi tak koi order nahi. Biryani order karo! 😋</p>`; 
+                return; 
+            } 
+            container.innerHTML = orders.map(o => { 
+                const steps = [
+                    { key: 'PLACED', label: 'Order Placed', icon: '📋' },
+                    { key: 'COOKING', label: 'Cooking', icon: '👨‍🍳' },
+                    { key: 'PACKED', label: 'Packed & Ready', icon: '📦' },
+                    { key: 'OUT_FOR_DELIVERY', label: 'Out for Delivery', icon: '🛵' },
+                    { key: 'DELIVERED', label: 'Delivered', icon: '✅' },
+                ];
+                const statusOrder = ['PLACED','COOKING','PACKED','OUT_FOR_DELIVERY','DELIVERED'];
+                const currentIdx = statusOrder.indexOf(o.status) !== -1 ? statusOrder.indexOf(o.status) : 0;
+                const timelineHTML = steps.map((step, idx) => {
+                    const isDone = idx <= currentIdx;
+                    const isCurrent = idx === currentIdx;
                     return `
-                    <div class="border-2 border-gray-100 rounded-3xl p-5 hover:border-orange-200 transition shadow-sm mb-4">
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <span class="font-black text-gray-900 text-lg">Order #${o.id}</span>
-                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">${o.paymentMode}</p>
-                            </div>
-                            <div class="text-right">
-                                <span class="font-black text-orange-600 text-xl">₹${o.totalAmount.toFixed(2)}</span>
-                                <p class="text-xs font-bold ${statusColor} px-3 py-1 rounded-full mt-1 uppercase inline-block border ${statusColor.replace('bg-', 'border-').replace('50', '200')}">${o.status}</p>
-                            </div>
+                    <div class="status-step ${isDone ? 'done' : ''} flex items-start space-x-3 pb-3">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm shrink-0 ${isDone ? 'bg-orange-600 text-white shadow-md' : 'bg-gray-100 text-gray-400'} ${isCurrent ? 'ring-2 ring-orange-300 ring-offset-1' : ''}">
+                            ${step.icon}
+                        </div>
+                        <div class="pt-1">
+                            <p class="text-sm font-bold ${isDone ? 'text-gray-900' : 'text-gray-400'}">${step.label}</p>
+                            ${isCurrent ? '<p class="text-xs text-orange-500 font-medium animate-pulse">Current Status</p>' : ''}
                         </div>
                     </div>`;
                 }).join('');
-                
-            } catch(e) {
-                console.error(e);
-                document.getElementById('my-orders-list').innerHTML = `<p class="text-center text-red-500 font-bold mt-10">Server disconnected! 🔴</p>`;
+                let reviewUI = ''; 
+                if (o.status === 'DELIVERED') { 
+                    if (o.rating && o.rating > 0) { 
+                        reviewUI = `<div class="mt-3 pt-3 border-t border-gray-100"><span class="text-orange-500 tracking-widest">${'★'.repeat(o.rating)}${'☆'.repeat(5-o.rating)}</span>${o.reviewText ? `<p class="text-xs text-gray-500 italic mt-1">"${o.reviewText}"</p>` : ''}</div>`; 
+                    } else { 
+                        reviewUI = `<button onclick="openReviewModal(${o.id})" class="mt-3 text-xs bg-orange-100 text-orange-600 font-bold px-3 py-1.5 rounded-lg hover:bg-orange-500 hover:text-white transition border border-orange-200">⭐ Rate & Review</button>`; 
+                    } 
+                } 
+                return `
+                <div class="border-2 border-gray-100 rounded-3xl p-5 hover:border-orange-200 transition shadow-sm">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <span class="font-black text-gray-900 text-lg">Order #${o.id}</span>
+                            <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">${o.paymentMode}</p>
+                            ${o.deliveryAddress ? `<p class="text-xs text-gray-500 mt-1">📍 ${o.deliveryAddress}</p>` : ''}
+                        </div>
+                        <span class="font-black text-orange-600 text-xl">₹${o.totalAmount.toFixed(2)}</span>
+                    </div>
+                    <div class="bg-gray-50 rounded-2xl p-4 mb-3">
+                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Order Journey</p>
+                        ${timelineHTML}
+                    </div>
+                    ${reviewUI}
+                </div>`; 
+            }).join(''); 
+        } catch(e) { 
+            container.innerHTML = `<p class="text-center text-red-500 font-bold mt-10">Server disconnected! 🔴</p>`; 
+        } 
+    }
+
+    let currentReviewOrderId = null; let selectedStars = 0;
+    window.openReviewModal = function(orderId) { currentReviewOrderId = orderId; setRating(0); document.getElementById('review-text').value = ''; document.getElementById('review-order-id-display').innerText = orderId; const m = document.getElementById('review-modal'); m.classList.remove('hidden'); setTimeout(() => m.classList.add('opacity-100'), 10); }
+    window.closeReviewModal = function() { const m = document.getElementById('review-modal'); m.classList.remove('opacity-100'); setTimeout(() => m.classList.add('hidden'), 300); }
+    window.setRating = function(stars) { selectedStars = stars; document.querySelectorAll('.star-btn').forEach((btn, i) => { btn.classList.toggle('text-yellow-400', i < stars); btn.classList.toggle('text-gray-300', i >= stars); }); }
+    window.submitReview = async function() { 
+        if(selectedStars === 0) return showToast("Wait!", "Kam se kam 1 star do.", "⭐"); 
+        try { 
+            showToast("Submitting...", "Review save ho rahi hai.", "⏳"); 
+            const res = await fetch(`https://wow-food-backend.onrender.com//api/orders/${currentReviewOrderId}/review?rating=${selectedStars}&reviewText=${encodeURIComponent(document.getElementById('review-text').value.trim())}`, { method: 'PUT' }); 
+            if(res.ok) { showToast("Thank You!", "Review save ho gayi.", "💖"); closeReviewModal(); fetchMyOrders(); } 
+        } catch(e) { showToast("Error", "Review save nahi hui.", "❌"); } 
+    }
+
+    // =============================================
+    // THEME
+    // =============================================
+    window.toggleTheme = function() { 
+        const b = document.body; 
+        const btns = [document.getElementById('theme-toggle-btn'), document.getElementById('theme-toggle-btn-mobile')];
+        if (b.classList.contains('theme-night')) { 
+            b.classList.replace('theme-night', 'theme-morning'); localStorage.setItem('wowTheme', 'light'); 
+            btns.forEach(btn => { if(btn) btn.innerText = '🌙'; }); showToast("Theme Updated", "Day Mode ☀️", "✨"); 
+        } else { 
+            b.classList.replace('theme-morning', 'theme-night'); localStorage.setItem('wowTheme', 'dark'); 
+            btns.forEach(btn => { if(btn) btn.innerText = '☀️'; }); showToast("Theme Updated", "Night Mode 🌙", "✨"); 
+        } 
+    };
+
+    function applyGoldenHourUI() { 
+        const savedTheme = localStorage.getItem('wowTheme'); 
+        const h = new Date().getHours(); 
+        const b = document.body; 
+        const btns = [document.getElementById('theme-toggle-btn'), document.getElementById('theme-toggle-btn-mobile')];
+        if (savedTheme === 'dark') { b.classList.add('theme-night'); b.classList.remove('theme-morning'); btns.forEach(btn => { if(btn) btn.innerText = '☀️'; }); } 
+        else if (savedTheme === 'light') { b.classList.add('theme-morning'); b.classList.remove('theme-night'); btns.forEach(btn => { if(btn) btn.innerText = '🌙'; }); } 
+        else { 
+            if(h >= 6 && h < 18) { b.classList.add('theme-morning'); b.classList.remove('theme-night'); btns.forEach(btn => { if(btn) btn.innerText = '🌙'; }); }
+            else { b.classList.add('theme-night'); b.classList.remove('theme-morning'); btns.forEach(btn => { if(btn) btn.innerText = '☀️'; }); }
+        } 
+        displayMenu(menuItems); 
+    }
+
+    // =============================================
+    // CAROUSEL
+    // =============================================
+    let currentSlideIndex = 0; 
+    const slides = document.querySelectorAll('#banner-carousel .slide'); 
+    const dots = document.querySelectorAll('#banner-carousel .dot'); 
+    let carouselInterval;
+    function showSlide(index) { slides.forEach(s => s.classList.remove('active')); dots.forEach(d => d.classList.remove('active')); slides[index].classList.add('active'); dots[index].classList.add('active'); currentSlideIndex = index; }
+    function nextSlide() { showSlide((currentSlideIndex + 1) % slides.length); }
+    function startCarousel() { carouselInterval = setInterval(nextSlide, 4000); }
+    window.goToSlide = function(index) { clearInterval(carouselInterval); showSlide(index); startCarousel(); }
+    document.getElementById('banner-carousel').addEventListener('mouseenter', () => clearInterval(carouselInterval)); 
+    document.getElementById('banner-carousel').addEventListener('mouseleave', startCarousel);
+
+    window.toggleBooking = function() { const m = document.getElementById('booking-modal'); m.classList.toggle('hidden'); setTimeout(() => m.classList.toggle('opacity-100'), 10); };
+    window.confirmBooking = function() { showToast("Table Reserved!", "₹999 mein booking confirm ho gayi!", "✨"); toggleBooking(); };
+
+    // =============================================
+    // FAQ BOT ENGINE 
+    // =============================================
+    let faqOpen = false;
+    let currentFaqCategory = 'popular';
+
+    const FAQ_DATA = {
+        popular: [
+            {
+                q: "Promo code chahiye 🤫",
+                a: "Aapke liye special code: <b>DOSTI10</b> — seedha 10% off! 🎉 Cart mein jaake apply karo. ₹450+ order par <b>WOW25</b> use karo aur pao 25% off!",
+                action: { label: "Cart Mein Jaao 🛒", fn: "toggleCart()" }
+            },
+            {
+                q: "Delivery time kitna hai?",
+                a: "🛵 <b>CB Ganj area:</b> 20-30 minutes<br>🕐 <b>Bareilly nearby:</b> 35-50 minutes<br>📍 Exact ETA checkout pe pincode dalte waqt milega!"
+            },
+            {
+                q: "Minimum order kitna hai?",
+                a: "Minimum order <b>₹150</b> hai. ₹400+ order karo aur delivery bilkul <b>FREE</b> ho jaati hai! 🎁"
+            },
+            {
+                q: "Kya COD available hai?",
+                a: "Haan! 💵 <b>Cash on Delivery</b> available hai. Cart mein jaao → Payment Mode mein COD select karo. UPI (GPay/PhonePe) aur Card bhi accept karte hain!"
+            },
+            {
+                q: "Kha se hai ye restaurant?",
+                a: "Hum hain <b>CB Ganj, Bareilly</b> mein! ☝️ Founders hain <b>Utkarsh Katiyar & Sneha Yadav</b>. Pure Bareilly ki sabse smart Cloud Kitchen! 🚀"
             }
-        }
+        ],
+        menu: [
+            {
+                q: "Veg options kya hain?",
+                a: "Hamare paas bahut saare veg options hain! 🥗<br>• Paneer Butter Masala<br>• Dal Makhani<br>• Veg Biryani<br>• Aloo Paratha<br>Menu mein 'Veg' filter use karo!"
+            },
+            {
+                q: "Aaj ka special kya hai?",
+                a: "🌟 <b>Chef Sneha's Special:</b> Sizzling Paneer Tikka + Dal Makhani Combo!<br>Menu ke upar <b>'Specials'</b> section mein dekho fresh specials!"
+            },
+            {
+                q: "Kya Biryani milti hai?",
+                a: "Bilkul! 🍚 Hamare paas <b>Chicken Biryani, Mutton Biryani aur Veg Biryani</b> available hai. Menu mein search karo 'Biryani'!"
+            },
+            {
+                q: "Non-veg available hai?",
+                a: "Haan! 🍗 Chicken, Mutton aur Fish dishes available hain. Menu → Starters / Main Course filter use karo!"
+            },
+            {
+                q: "Drinks kya kya hain?",
+                a: "😋 <b>Drinks Menu:</b><br>• Cold Drinks (Pepsi, Sprite, etc.)<br>• Fresh Lime Water<br>• Lassi (Sweet / Salted)<br>• Shakes<br>Menu mein 'Drinks' tab click karo!"
+            }
+        ],
+        delivery: [
+            {
+                q: "Delivery charge kitna hai?",
+                a: "🛵 Delivery charges:<br>• <b>₹0 (FREE)</b> — ₹400+ orders pe<br>• <b>₹40</b> — ₹400 se kam orders pe<br>Zyada order karo aur save karo! 😄"
+            },
+            {
+                q: "Kahan tak delivery hoti hai?",
+                a: "📍 Hum deliver karte hain:<br>• CB Ganj & surroundings ✅<br>• Bareilly city area ✅<br>• Pincode 243xxx — mostly yes ✅<br>Checkout pe pincode daalo, exact status milega!"
+            },
+            {
+                q: "Order track kaise karo?",
+                a: "📦 Login karke <b>'My Orders'</b> pe jaao. Wahan live status timeline milega:<br>Order Placed → Cooking → Packed → Out for Delivery → Delivered! 🎯"
+            },
+            {
+                q: "Order late ho raha hai?",
+                a: "😔 Sorry! Agar 60 min se zyada ho gaye toh:<br>📱 <b>Utkarsh: 9XXXXXXXXX</b> call karo<br>Ya chatbot mein 'complaint' likho. Hum turant handle karenge!"
+            },
+            {
+                q: "Order cancel kar sakte hain?",
+                a: "⏱️ Order place hone ke <b>10 seconds</b> ke andar cancel ho sakta hai — confirmation screen pe red button hoga! Baad mein cancel ke liye owner se contact karo."
+            }
+        ],
+        payment: [
+            {
+                q: "Kaunse payment accept hain?",
+                a: "💳 Hum accept karte hain:<br>• UPI (GPay, PhonePe, Paytm) ✅<br>• Credit / Debit Card ✅<br>• Cash on Delivery (COD) ✅<br>Sab secure hai!"
+            },
+            {
+                q: "WOW25 code kaise use karein?",
+                a: "🎉 <b>WOW25</b> use karne ke liye:<br>1. ₹450+ ka order karo<br>2. Cart open karo<br>3. Promo box mein <b>WOW25</b> likho<br>4. Apply click karo — 25% off! 🔥"
+            },
+            {
+                q: "DOSTI10 code kya hai?",
+                a: "🤝 <b>DOSTI10</b> hai founders ka special code — kisi bhi order pe seedha <b>10% discount!</b> Cart mein apply karo. Kisi bhi minimum order ki zaroorat nahi!"
+            },
+            {
+                q: "Payment fail ho gayi?",
+                a: "😬 Payment fail? Ghabrao mat!<br>• Pehle bank app check karo<br>• Amount 5-7 din mein auto-refund hoga<br>• Ya phir COD choose karo — safe option!"
+            },
+            {
+                q: "GST kitna lagta hai?",
+                a: "📊 <b>5% GST</b> apply hoti hai final amount pe. Bill download karo — wahan complete breakdown milega!"
+            }
+        ],
+        other: [
+            {
+                q: "Table booking kaise karein?",
+                a: "📅 <b>Table Book Karo:</b><br>1. Navbar mein 'Book Table' click karo<br>2. Date & Time select karo<br>3. Confirm karo — ₹999 mein reservation!"
+            },
+            {
+                q: "Khana taste kaisa hai?",
+                a: "😍 Bilkul ghar jaisa! Utkarsh aur Sneha khud quality check karte hain. Avg rating: <b>4.8/5 ⭐</b> — Bareilly ka most loved cloud kitchen! Try karo aur khud judge karo! 🏆"
+            },
+            {
+                q: "App download kaise karein?",
+                a: "📱 Website ko <b>app ki tarah install</b> kar sakte ho! Browser mein 'Add to Home Screen' option dhundho. Ya PWA popup aane tak wait karo — automatic aayega!"
+            },
+            {
+                q: "Opening hours kya hain?",
+                a: "⏰ Hum open hain:<br>🌅 <b>Morning:</b> 10:00 AM<br>🌙 <b>Night:</b> 11:00 PM<br>Roz! Sundays bhi. Kitchen closed hone par website banner dikhega."
+            },
+            {
+                q: "Feedback dena hai",
+                a: "💬 Aapka feedback bahut important hai!<br>1. Order deliver hone ke baad 'My Orders' pe jaao<br>2. '⭐ Rate & Review' button click karo<br>3. Stars aur review likho — Sneha personally padhti hain! 🙏"
+            }
+        ]
+    };
 
-        window.toggleBooking = function() { const m = document.getElementById('booking-modal'); m.classList.toggle('hidden'); setTimeout(() => m.classList.toggle('opacity-100'), 10); };
-        window.confirmBooking = function() { showToast("Booking Confirmed!", "Your table is reserved. ₹999 paid.", "✨"); toggleBooking(); };
-
-        // --- 9. SMART AI CHATBOT ---
-        const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        let mic;
-        if(Recognition) { mic = new Recognition(); mic.lang = 'hi-IN'; mic.onresult = (e) => { document.getElementById('chat-input').value = e.results[0][0].transcript; handleChat(); }; }
-        window.startVoice = function() { if(mic) { mic.start(); appendMsg("Listening...", 'ai'); } else { showToast("Error", "Mic not supported in this browser.", "⚠️"); } };
-        window.toggleChat = function() { document.getElementById('ai-chat').classList.toggle('translate-y-[120%]'); };
+    window.toggleFAQ = function() {
+        faqOpen = !faqOpen;
+        const panel = document.getElementById('faq-panel');
+        const dot = document.getElementById('faq-notif-dot');
         
-        window.handleChat = function() { 
-            const i = document.getElementById('chat-input'); const msg = i.value.trim(); if(!msg) return; 
-            appendMsg(msg, 'user'); i.value=''; document.getElementById('typing').classList.remove('hidden'); 
-            setTimeout(() => { document.getElementById('typing').classList.add('hidden'); appendMsg(generateAIResponse(msg), 'ai'); }, 800); 
-        };
+        if (faqOpen) {
+            panel.classList.remove('faq-hidden');
+            if(dot) dot.classList.add('hidden'); 
+            renderFaqChips(currentFaqCategory);
+        } else {
+            panel.classList.add('faq-hidden');
+        }
+    };
+
+    window.setFaqCategory = function(cat) {
+        currentFaqCategory = cat;
+        document.querySelectorAll('.faq-category-tab').forEach(t => t.classList.remove('active'));
+        const activeTab = document.getElementById('tab-' + cat);
+        if(activeTab) activeTab.classList.add('active');
+        document.getElementById('faq-answer-area').classList.add('hidden');
+        renderFaqChips(cat);
+    };
+
+    function renderFaqChips(cat) {
+        const area = document.getElementById('faq-questions-area');
+        const items = FAQ_DATA[cat] || [];
+        area.innerHTML = items.map((item, idx) => 
+            `<span class="faq-chip" onclick="showFaqAnswer(${idx}, '${cat}')">${item.q}</span>`
+        ).join('');
         
-        function generateAIResponse(input) {
-            const lowerInput = input.toLowerCase();
-            if(lowerInput.match(/(discount|kam|sasta|mehenga|bargain|bhav|offer)/)) return "Arre bhai! Chalo theek hai, Utkarsh bhai se baat karke ek secret code laya hoon: **DOSTI10**. Cart mein apply karo aur 10% chhoot pao! 🤫";
-            if (lowerInput.includes("paneer")) return "🥘 **Paneer Butter Masala (₹260)** hamari best dish hai. Menu check karein!";
-            if (lowerInput.includes("biryani")) return "🍚 **Chicken Biryani** sirf **₹300** mein! Order karein?";
-            
-            let cleanInput = lowerInput.replace(/(price|ka|kitne|hai|mujhe|chahiye|dikhao|batao)/g, '').trim();
-            let matchedItem = menuItems.find(i => lowerInput.includes(i.name.toLowerCase()) || (cleanInput.length > 3 && i.name.toLowerCase().includes(cleanInput)));
-            if (matchedItem) return `✅ Haan bilkul! **${matchedItem.name}** aapko **₹${matchedItem.price}** mein mil jayegi.`;
-            
-            if(lowerInput.includes("status")) return "📦 Aapka order kitchen mein prepare ho raha hai!";
-            if(lowerInput.includes("founder") || lowerInput.includes("utkarsh") || lowerInput.includes("sneha")) return "Wow Food ko **Utkarsh Katiyar** aur **Sneha Yadav** ne banaya hai. 🚀";
-            return "Maaf kijiye, main abhi seekh raha hoon. Par aap mujhse **'discount do'** pooch sakte hain!";
-        }
+        gsap.from('.faq-chip', { 
+            opacity: 0, y: 8, stagger: 0.05, duration: 0.3, ease: 'power2.out'
+        });
+    }
+
+    window.showFaqAnswer = function(idx, cat) {
+        const item = FAQ_DATA[cat][idx];
+        const answerArea = document.getElementById('faq-answer-area');
+        const answerText = document.getElementById('faq-answer-text');
+        const actionDiv = document.getElementById('faq-answer-action');
+        const actionBtn = document.getElementById('faq-action-btn');
+
+        answerText.innerHTML = item.a;
         
-        function appendMsg(t, s) { 
-            const c = document.getElementById('chat-messages'); const d = document.createElement('div'); 
-            d.className = s==='user' ? "bg-gray-900 text-white p-4 rounded-3xl ml-auto mb-2 text-sm max-w-[85%] shadow-md" : "bg-orange-100 text-gray-800 p-4 rounded-3xl mb-2 text-sm max-w-[85%] shadow-sm font-medium"; 
-            d.innerHTML = t.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>'); c.appendChild(d); c.scrollTop = c.scrollHeight; 
-        }
-        document.getElementById('chat-input')?.addEventListener('keypress', (e) => { if(e.key === 'Enter') handleChat(); });
-
-        // --- 10. CAROUSEL ENGINE ---
-        let currentSlideIndex = 0; const slides = document.querySelectorAll('#banner-carousel .slide'); const dots = document.querySelectorAll('#banner-carousel .dot'); let carouselInterval;
-        function showSlide(index) { slides.forEach(s => s.classList.remove('active')); dots.forEach(d => d.classList.remove('active')); slides[index].classList.add('active'); dots[index].classList.add('active'); currentSlideIndex = index; }
-        function nextSlide() { showSlide((currentSlideIndex + 1) % slides.length); }
-        function startCarousel() { carouselInterval = setInterval(nextSlide, 4000); }
-        function stopCarousel() { clearInterval(carouselInterval); }
-        window.goToSlide = function(index) { stopCarousel(); showSlide(index); startCarousel(); }
-        document.getElementById('banner-carousel').addEventListener('mouseenter', stopCarousel); document.getElementById('banner-carousel').addEventListener('mouseleave', startCarousel);
-
-        // --- 11. WEATHER AI BANNER ---
-        function checkWeatherAI() {
-            const banner = document.getElementById('weather-banner');
-            const icon = document.getElementById('weather-icon');
-            const text = document.getElementById('weather-text');
-            const hour = new Date().getHours();
-            setTimeout(() => {
-                banner.classList.remove('hidden');
-                if (hour >= 11 && hour <= 16) {
-                    icon.innerText = '☀️'; text.innerText = "It's hot in Bareilly! Beat the heat with our Sweet Lassi.";
-                    banner.className = "bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-6 py-2.5 flex justify-between items-center z-40 relative shadow-sm transition-all duration-500";
-                } else if (hour >= 17 && hour <= 20) {
-                    icon.innerText = '☕'; text.innerText = "Perfect evening in CB Ganj for Masala Chai!";
-                    banner.className = "bg-gradient-to-r from-orange-600 to-red-500 text-white px-6 py-2.5 flex justify-between items-center z-40 relative shadow-sm transition-all duration-500";
-                } else {
-                    icon.innerText = '🌙'; text.innerText = "Midnight cravings? Try our Butter Chicken.";
-                    banner.className = "bg-gradient-to-r from-indigo-600 to-purple-800 text-white px-6 py-2.5 flex justify-between items-center z-40 relative shadow-sm transition-all duration-500";
-                }
-            }, 3000);
+        if(item.action) {
+            actionDiv.classList.remove('hidden');
+            actionBtn.innerText = item.action.label;
+            actionBtn.onclick = () => { eval(item.action.fn); toggleFAQ(); };
+        } else {
+            actionDiv.classList.add('hidden');
         }
 
-        // --- 12. THEME & SOCIAL PROOF ---
-        function applyGoldenHourUI() { const h = new Date().getHours(); const b = document.body; h >= 6 && h < 18 ? (b.classList.add('theme-morning'), b.classList.remove('theme-night')) : (b.classList.add('theme-night'), b.classList.remove('theme-morning')); menuItems.sort((a, b) => h >= 6 && h < 12 ? (a.cat === 'Drinks' ? -1 : 1) : (h >= 18 ? (a.cat === 'Main Course' ? -1 : 1) : 0)); displayMenu(menuItems); }
-        function showSocial() { const names = ["Utkarsh", "Sneha", "Aman", "Riya", "Harshit"]; const dishes = ["Paneer Tikka", "Biryani", "Dal Makhani", "Chai"]; const sp = document.getElementById('social-proof'); if(sp) { document.getElementById('sp-message').innerHTML = `<b>${names[Math.floor(Math.random()*names.length)]}</b> in <b>CB Ganj</b> ordered <b>${dishes[Math.floor(Math.random()*dishes.length)]}</b>!`; sp.classList.remove('translate-y-48'); setTimeout(() => sp.classList.add('translate-y-48'), 6000); } }
+        answerArea.classList.remove('hidden');
+        
+        const bubble = document.getElementById('faq-answer-bubble');
+        bubble.classList.remove('faq-answer-bubble');
+        void bubble.offsetWidth; 
+        bubble.classList.add('faq-answer-bubble');
+    };
 
-        // --- 13. INITIALIZATION ---
-        window.onload = () => {
-            gsap.to("#hero-title", { opacity: 1, y: 0, duration: 1 }); 
-            gsap.to("#hero-desc", { opacity: 1, duration: 0.8, delay: 0.3 }); 
-            gsap.to("#hero-btns", { opacity: 1, duration: 0.6, delay: 0.5 }); 
-            gsap.to("#food-img", { opacity: 1, scale: 1, duration: 1, ease: "back.out" });
-            gsap.utils.toArray('.reveal').forEach(el => gsap.from(el, { opacity: 0, y: 30, duration: 1, scrollTrigger: { trigger: el, start: "top 95%" }}));
+    // =============================================
+    // AI CONCIERGE CHATBOT (CLAUDE-POWERED)
+    // =============================================
+    const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let mic;
+    if(Recognition) { 
+        mic = new Recognition(); 
+        mic.lang = 'hi-IN'; 
+        mic.onresult = (e) => { document.getElementById('chat-input').value = e.results[0][0].transcript; handleChat(); }; 
+    }
+    window.startVoice = function() { 
+        if(mic) { mic.start(); appendMsg("Sun raha hoon... 🎙️", 'ai'); } 
+        else { showToast("Error", "Mic is browser mein supported nahi.", "⚠️"); } 
+    };
+    window.toggleChat = function() { document.getElementById('ai-chat').classList.toggle('translate-y-[120%]'); };
+    
+    window.handleChat = async function() { 
+        const input = document.getElementById('chat-input'); 
+        const msg = input.value.trim(); 
+        if(!msg) return; 
+        
+        appendMsg(msg, 'user'); 
+        input.value = ''; 
+        
+        const typingEl = document.getElementById('typing-indicator');
+        typingEl.classList.remove('hidden');
+        
+        chatHistory.push({ role: "user", content: msg });
+        
+        try {
+            const menuContext = menuItems.length > 0 
+                ? `Aaj ka menu:\n${menuItems.map(i => `- ${i.name} (${i.cat}): ₹${i.price}${i.special ? ' [Chef Special]' : ''}`).join('\n')}`
+                : "Menu abhi load ho raha hai.";
             
-            startCarousel(); 
-            checkWeatherAI(); 
-            setTimeout(() => {setInterval(showSocial, 15000);}, 5000);
+            const user = JSON.parse(localStorage.getItem('wowUser'));
+            const userName = user ? user.fullName.split(' ')[0] : "Guest";
+            const cartSummary = cart.length > 0 
+                ? `Cart mein hai: ${cart.map(i => `${i.qty}x ${i.name}`).join(', ')} — Total: ₹${currentTotal}`
+                : "Cart abhi khali hai.";
+            
+            const systemPrompt = `Tu hai "Wow Concierge" — Wow Food cloud kitchen ka AI assistant. Location: CB Ganj, Bareilly, UP. Founders: Utkarsh Katiyar (tech) aur Sneha Yadav (food quality).
 
-            fetchMenuFromDatabase(); 
-            checkAuthStatus(); 
-        };
+Tu Hinglish mein baat karta hai — warm, fun, helpful. Bahut chhote aur punchy replies deta hai.
+
+${menuContext}
+
+Promo codes:
+- DOSTI10: Kisi bhi order pe 10% off (cart mein apply karo)
+- WOW25: ₹450+ order pe 25% off
+
+Delivery:
+- CB Ganj: 20-30 min | Bareilly: 35-50 min
+- Free delivery ₹400+ orders pe | ₹40 below that
+- Pincode 243xxx areas serve karte hain
+
+Timings: 10 AM – 11 PM daily
+Min order: ₹150 | Table booking: ₹999
+
+Customer: ${userName}
+${cartSummary}
+
+Rules:
+1. Menu prices accurate batao
+2. Discount maangne par thoda suspense rakho, phir DOSTI10 code do
+3. Honest raho — jo nahi pata, clearly bol do
+4. Emojis use karo par zyada nahi
+5. 2-3 lines max per reply — concise raho
+6. Order karne ko encourage karo naturally`;
+
+            const response = await fetch("https://api.anthropic.com/v1/messages", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    model: "claude-sonnet-4-20250514",
+                    max_tokens: 1000,
+                    system: systemPrompt,
+                    messages: chatHistory
+                })
+            });
+            
+            const data = await response.json();
+            const aiReply = data.content?.[0]?.text || "Maaf karo, kuch technical issue aa gaya. Thodi der baad try karo!";
+            
+            chatHistory.push({ role: "assistant", content: aiReply });
+            if(chatHistory.length > 10) chatHistory = chatHistory.slice(-10);
+            
+            typingEl.classList.add('hidden');
+            appendMsg(aiReply, 'ai');
+            
+        } catch (error) {
+            console.error('Claude API error:', error);
+            typingEl.classList.add('hidden');
+            appendMsg(generateFallbackResponse(msg), 'ai');
+        }
+    };
+    
+    function generateFallbackResponse(input) {
+        const l = input.toLowerCase();
+        if(l.match(/(discount|sasta|offer|kam|code|promo)/)) return "Psst! 🤫 Founders ka secret code hai: **DOSTI10** — 10% off seedha! ₹450+ hai toh **WOW25** se 25% off. Cart mein apply karo!";
+        if(l.match(/(biryani)/)) return "🍚 Biryani available hai! Menu mein check karo price. Add to cart karo!";
+        if(l.match(/(paneer)/)) return "🥘 Paneer Butter Masala founders ki favourite dish hai! Menu mein dekho.";
+        if(l.match(/(delivery|time|kitna|waqt|eta)/)) return "🛵 CB Ganj mein 20-30 min, Bareilly mein 35-50 min. ₹400+ pe FREE delivery!";
+        if(l.match(/(cancel|order cancel)/)) return "⏱️ Order ke 10 seconds baad tak cancel ho sakta hai — confirmation screen pe red button hai!";
+        if(l.match(/(payment|cod|upi|gpay)/)) return "💳 UPI (GPay/PhonePe), Card, aur COD — teeno available hain!";
+        if(l.match(/(table|book|reservation)/)) return "📅 Navbar mein 'Book Table' click karo — ₹999 mein reservation!";
+        if(l.match(/(timing|open|band|close)/)) return "⏰ Hum 10 AM – 11 PM tak open hain, roz!";
+        const menuItem = menuItems.find(i => l.includes((i.name||"").toLowerCase()));
+        if(menuItem) return `✅ **${menuItem.name}** — ₹${menuItem.price} mein available hai! 😋 Add to cart karo!`;
+        return "Yaar, main samajh gaya par abhi Claude se connect nahi ho pa raha. FAQ section try karo (left side ka 💬 button)! 😊";
+    }
+    
+    function appendMsg(text, sender) { 
+        const c = document.getElementById('chat-messages'); 
+        const d = document.createElement('div'); 
+        d.className = `chat-msg-enter ${sender === 'user' 
+            ? "bg-gray-900 text-white p-4 rounded-3xl rounded-tr-sm ml-auto mb-2 text-sm max-w-[88%] shadow-md" 
+            : "bg-white text-gray-800 p-4 rounded-3xl rounded-tl-sm mb-2 text-sm max-w-[88%] shadow-sm font-medium border border-gray-100"}`;
+        d.innerHTML = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>'); 
+        c.appendChild(d); 
+        c.scrollTop = c.scrollHeight; 
+    }
+
+    document.getElementById('chat-input')?.addEventListener('keypress', (e) => { if(e.key === 'Enter') handleChat(); });
+
+    // =============================================
+    // ANTIGRAVITY EFFECT (Space Float)
+    // =============================================
+    function initAntigravity() {
+        gsap.utils.toArray('.antigravity-el').forEach(el => {
+            gsap.to(el, {
+                y: `random(-30, 30)`, 
+                x: `random(-30, 30)`, 
+                rotation: `random(-20, 20)`, 
+                duration: `random(3, 6)`, 
+                repeat: -1, 
+                yoyo: true, 
+                ease: "sine.inOut" 
+            });
+        });
+
+        document.addEventListener("mousemove", (e) => {
+            const xOffset = (window.innerWidth / 2 - e.pageX) * 0.03;
+            const yOffset = (window.innerHeight / 2 - e.pageY) * 0.03;
+            
+            gsap.to('.antigravity-el', {
+                xPercent: xOffset,
+                yPercent: yOffset,
+                duration: 1.5,
+                ease: "power2.out"
+            });
+        });
+    }
+
+    // =============================================
+    // INIT
+    // =============================================
+    window.onload = () => {
+        gsap.to("#hero-title", { opacity: 1, y: 0, duration: 1 }); 
+        gsap.to("#hero-desc", { opacity: 1, duration: 0.8, delay: 0.3 }); 
+        gsap.to("#hero-btns", { opacity: 1, duration: 0.6, delay: 0.5 }); 
+        gsap.to("#food-img", { opacity: 1, scale: 1, duration: 1, ease: "back.out" });
+        gsap.utils.toArray('.reveal').forEach(el => gsap.from(el, { opacity: 0, y: 30, duration: 1, scrollTrigger: { trigger: el, start: "top 95%" }}));
+        
+        startCarousel(); 
+        checkAuthStatus();
+        initAntigravity(); // 🚀 Antigravity started here
+
+        renderFaqChips('popular');
+        
+        setTimeout(() => {
+            const dot = document.getElementById('faq-notif-dot');
+            if(dot) dot.classList.add('hidden');
+        }, 8000);
+    };
     </script>
 </body>
-</html>
+</html
